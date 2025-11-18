@@ -1,0 +1,137 @@
+.top-performers-panel {
+  background: white;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.top-performers-panel h2 {
+  margin: 0 0 16px 0;
+  color: #333;
+  font-size: 24px;
+}
+
+.performers-summary {
+  margin-bottom: 24px;
+  color: #666;
+}
+
+.performers-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.performers-section {
+  background: #f9f9f9;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.performers-section h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+}
+
+.best-title {
+  color: #10b981;
+}
+
+.worst-title {
+  color: #ef4444;
+}
+
+.performers-list {
+  margin-bottom: 16px;
+}
+
+.performer-card {
+  background: white;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-left: 3px solid #ccc;
+}
+
+.performer-card.best {
+  border-left-color: #10b981;
+}
+
+.performer-card.worst {
+  border-left-color: #ef4444;
+}
+
+.performer-rank {
+  font-weight: bold;
+  font-size: 18px;
+  color: #666;
+  min-width: 30px;
+}
+
+.performer-info {
+  flex: 1;
+}
+
+.performer-name {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.performer-type {
+  font-size: 12px;
+  color: #666;
+  text-transform: capitalize;
+}
+
+.performer-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-end;
+}
+
+.performer-stat {
+  display: flex;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.performer-stat .label {
+  color: #666;
+}
+
+.performer-stat .value {
+  font-weight: 600;
+  color: #333;
+}
+
+.performer-stat .value.positive {
+  color: #ef4444;
+}
+
+.performer-stat .value.negative {
+  color: #10b981;
+}
+
+.performers-chart {
+  margin-top: 16px;
+}
+
+.loading,
+.no-data {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+@media (max-width: 1024px) {
+  .performers-container {
+    grid-template-columns: 1fr;
+  }
+}
+

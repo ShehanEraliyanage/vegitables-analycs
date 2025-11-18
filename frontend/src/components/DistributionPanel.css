@@ -1,0 +1,97 @@
+.distribution-panel {
+  background: white;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.distribution-panel h2 {
+  margin: 0 0 16px 0;
+  color: #333;
+  font-size: 24px;
+}
+
+.distribution-summary {
+  margin-bottom: 24px;
+}
+
+.summary-stats {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 12px;
+}
+
+.summary-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.summary-stat .label {
+  font-size: 12px;
+  color: #666;
+}
+
+.summary-stat .value {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.distribution-summary p {
+  color: #666;
+  margin: 0;
+}
+
+.distribution-chart {
+  margin-bottom: 24px;
+}
+
+.distribution-chart h3 {
+  margin: 0 0 16px 0;
+  color: #333;
+}
+
+.distribution-table {
+  margin-top: 24px;
+}
+
+.distribution-table h3 {
+  margin: 0 0 16px 0;
+  color: #333;
+}
+
+.distribution-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.distribution-table th,
+.distribution-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.distribution-table th {
+  background: #f9fafb;
+  font-weight: 600;
+  color: #374151;
+}
+
+.distribution-table td {
+  color: #666;
+}
+
+.distribution-table tr:hover {
+  background: #f9fafb;
+}
+
+.loading,
+.no-data {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+

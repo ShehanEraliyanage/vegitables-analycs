@@ -163,6 +163,56 @@ export const apiService = {
     const response = await api.get('/prices/check-date', { params });
     return response.data;
   },
+
+  // Advanced Analytics
+  getPriceTrends: async (params?: {
+    startDate?: string;
+    endDate?: string;
+    productId?: number;
+  }) => {
+    const response = await api.get('/analytics/trends', { params });
+    return response.data;
+  },
+
+  getTopPerformers: async (params?: {
+    startDate?: string;
+    endDate?: string;
+    limit?: number;
+  }) => {
+    const response = await api.get('/analytics/top-performers', { params });
+    return response.data;
+  },
+
+  compareProducts: async (params: {
+    productIds: number[];
+    startDate?: string;
+    endDate?: string;
+  }) => {
+    const response = await api.get('/analytics/compare', {
+      params: {
+        ...params,
+        productIds: params.productIds.join(','),
+      },
+    });
+    return response.data;
+  },
+
+  getSeasonalAnalysis: async (params?: {
+    year?: number;
+    productId?: number;
+  }) => {
+    const response = await api.get('/analytics/seasonal', { params });
+    return response.data;
+  },
+
+  getPriceDistribution: async (params?: {
+    startDate?: string;
+    endDate?: string;
+    productId?: number;
+  }) => {
+    const response = await api.get('/analytics/distribution', { params });
+    return response.data;
+  },
 };
 
 export default api;

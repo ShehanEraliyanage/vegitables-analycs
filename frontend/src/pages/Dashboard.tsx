@@ -4,13 +4,20 @@ import { apiService, Product, Statistics } from '../services/api';
 import StatisticsPanel from '../components/StatisticsPanel';
 import FilterPanel from '../components/FilterPanel';
 import ChartPanel from '../components/ChartPanel';
+import TrendsPanel from '../components/TrendsPanel';
+import TopPerformersPanel from '../components/TopPerformersPanel';
+import ComparisonPanel from '../components/ComparisonPanel';
+import SeasonalPanel from '../components/SeasonalPanel';
+import DistributionPanel from '../components/DistributionPanel';
 import SyncButton from '../components/SyncButton';
 import DailySyncButton from '../components/DailySyncButton';
 import './Dashboard.css';
 
 type TimePeriod = 'weekly' | 'monthly' | 'quarterly' | 'six-month' | 'annual';
+type AnalyticsTab = 'overview' | 'trends' | 'performers' | 'comparison' | 'seasonal' | 'distribution';
 
 const Dashboard = () => {
+  const [activeTab, setActiveTab] = useState<AnalyticsTab>('overview');
   const [timePeriod, setTimePeriod] = useState<TimePeriod>('monthly');
   const [selectedProductId, setSelectedProductId] = useState<number | undefined>();
   const [startDate, setStartDate] = useState<string>('');
@@ -103,11 +110,40 @@ const Dashboard = () => {
     setStartDate(start.toISOString().split('T')[0]);
   }, [timePeriod]);
 
+  const exportToCSV = () => {
+    if (!analytics || !analytics.data) return;
+    
+    const headers = ['Period', 'Product', 'Product ID', 'Avg Min Price', 'Avg Max Price', 'Min Price', 'Max Price', 'Volatility'];
+    const rows = analytics.data.map((item: any) => [
+      item.period,
+      item.product,
+      item.productId,
+      item.avgMinPrice,
+      item.avgMaxPrice,
+      item.minPrice,
+      item.maxPrice,
+      item.volatility,
+    ]);
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `analytics-${timePeriod}-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="dashboard">
       <header className="dashboard-header">
         <h1>Vegetables & Fruits Price Analytics</h1>
-        <p>Sri Lanka Market Prices</p>
+        <p>Sri Lanka Market Prices - Comprehensive Analytics Platform</p>
       </header>
 
       <div className="dashboard-content">
@@ -130,16 +166,102 @@ const Dashboard = () => {
               onEndDateChange={setEndDate}
             />
 
-            <StatisticsPanel
-              statistics={statistics}
-              loading={statsLoading}
-            />
+            <div className="analytics-tabs">
+              <button
+                className={`tab-button ${activeTab === 'overview' ? 'active' : ''}`}
+                onClick={() => setActiveTab('overview')}
+              >
+                Overview
+              </button>
+              <button
+                className={`tab-button ${activeTab === 'trends' ? 'active' : ''}`}
+                onClick={() => setActiveTab('trends')}
+              >
+                Price Trends
+              </button>
+              <button
+                className={`tab-button ${activeTab === 'performers' ? 'active' : ''}`}
+                onClick={() => setActiveTab('performers')}
+              >
+                Top Performers
+              </button>
+              <button
+                className={`tab-button ${activeTab === 'comparison' ? 'active' : ''}`}
+                onClick={() => setActiveTab('comparison')}
+              >
+                Compare Products
+              </button>
+              <button
+                className={`tab-button ${activeTab === 'seasonal' ? 'active' : ''}`}
+                onClick={() => setActiveTab('seasonal')}
+              >
+                Seasonal Analysis
+              </button>
+              <button
+                className={`tab-button ${activeTab === 'distribution' ? 'active' : ''}`}
+                onClick={() => setActiveTab('distribution')}
+              >
+                Price Distribution
+              </button>
+              {activeTab === 'overview' && (
+                <button className="export-button" onClick={exportToCSV}>
+                  Export CSV
+                </button>
+              )}
+            </div>
 
-            <ChartPanel
-              analytics={analytics}
-              loading={analyticsLoading}
-              timePeriod={timePeriod}
-            />
+            <div className="analytics-content">
+              {activeTab === 'overview' && (
+                <>
+                  <StatisticsPanel
+                    statistics={statistics}
+                    loading={statsLoading}
+                  />
+                  <ChartPanel
+                    analytics={analytics}
+                    loading={analyticsLoading}
+                    timePeriod={timePeriod}
+                  />
+                </>
+              )}
+
+              {activeTab === 'trends' && (
+                <TrendsPanel
+                  startDate={startDate}
+                  endDate={endDate}
+                  productId={selectedProductId}
+                />
+              )}
+
+              {activeTab === 'performers' && (
+                <TopPerformersPanel
+                  startDate={startDate}
+                  endDate={endDate}
+                />
+              )}
+
+              {activeTab === 'comparison' && (
+                <ComparisonPanel
+                  products={products}
+                  startDate={startDate}
+                  endDate={endDate}
+                />
+              )}
+
+              {activeTab === 'seasonal' && (
+                <SeasonalPanel
+                  productId={selectedProductId}
+                />
+              )}
+
+              {activeTab === 'distribution' && (
+                <DistributionPanel
+                  startDate={startDate}
+                  endDate={endDate}
+                  productId={selectedProductId}
+                />
+              )}
+            </div>
           </>
         )}
       </div>
