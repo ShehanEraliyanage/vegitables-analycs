@@ -9,7 +9,13 @@ import './CurrentPricesPanel.css';
 type SortOption = 'name-asc' | 'name-desc' | 'price-asc' | 'price-desc' | 'date-asc' | 'date-desc';
 type FilterOption = 'all' | 'vegetable' | 'fruit' | 'rice';
 
-const CurrentPricesPanel = () => {
+interface CurrentPricesPanelProps {
+  selectedProductId?: number;
+  startDate?: string;
+  endDate?: string;
+}
+
+const CurrentPricesPanel = ({ selectedProductId, startDate, endDate }: CurrentPricesPanelProps) => {
   const [sortBy, setSortBy] = useState<SortOption>('name-asc');
   const [filterBy, setFilterBy] = useState<FilterOption>('all');
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
@@ -46,7 +52,25 @@ const CurrentPricesPanel = () => {
 
     let filtered = [...currentData.data];
 
-    // Apply filter
+    // Apply product filter from FilterPanel
+    if (selectedProductId) {
+      filtered = filtered.filter((price: any) => price.productId === selectedProductId);
+    }
+
+    // Apply date range filter from FilterPanel
+    if (startDate || endDate) {
+      filtered = filtered.filter((price: any) => {
+        const priceDate = new Date(price.date);
+        const start = startDate ? new Date(startDate) : null;
+        const end = endDate ? new Date(endDate) : null;
+        
+        if (start && priceDate < start) return false;
+        if (end && priceDate > end) return false;
+        return true;
+      });
+    }
+
+    // Apply type filter (internal filter)
     if (filterBy !== 'all') {
       filtered = filtered.filter((price: any) => {
         const productType = price.product?.type?.toLowerCase();
@@ -78,7 +102,7 @@ const CurrentPricesPanel = () => {
     });
 
     return filtered;
-  }, [currentData, sortBy, filterBy]);
+  }, [currentData, sortBy, filterBy, selectedProductId, startDate, endDate]);
 
   if (isLoading) {
     return (
@@ -175,6 +199,11 @@ const CurrentPricesPanel = () => {
 
         <div className="results-count">
           Showing {filteredAndSortedData.length} of {currentData.data.length} products
+          {(selectedProductId || startDate || endDate) && (
+            <span className="filter-active-indicator">
+              {' '}• Filters active
+            </span>
+          )}
         </div>
       </div>
 

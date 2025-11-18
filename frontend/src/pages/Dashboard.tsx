@@ -326,7 +326,11 @@ const Dashboard = () => {
 
             <div className={`analytics-content ${isTransitioning ? 'transitioning' : ''}`}>
               {activeTab === 'current' && (
-                <CurrentPricesPanel />
+                <CurrentPricesPanel 
+                  selectedProductId={selectedProductId}
+                  startDate={startDate}
+                  endDate={endDate}
+                />
               )}
 
               {activeTab === 'overview' && (
