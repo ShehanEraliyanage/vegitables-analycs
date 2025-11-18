@@ -9,15 +9,17 @@ import TopPerformersPanel from '../components/TopPerformersPanel';
 import ComparisonPanel from '../components/ComparisonPanel';
 import SeasonalPanel from '../components/SeasonalPanel';
 import DistributionPanel from '../components/DistributionPanel';
+import CurrentPricesPanel from '../components/CurrentPricesPanel';
+import LastPriceCard from '../components/LastPriceCard';
 import SyncButton from '../components/SyncButton';
 import DailySyncButton from '../components/DailySyncButton';
 import './Dashboard.css';
 
 type TimePeriod = 'weekly' | 'monthly' | 'quarterly' | 'six-month' | 'annual';
-type AnalyticsTab = 'overview' | 'trends' | 'performers' | 'comparison' | 'seasonal' | 'distribution';
+type AnalyticsTab = 'current' | 'overview' | 'trends' | 'performers' | 'comparison' | 'seasonal' | 'distribution';
 
 const Dashboard = () => {
-  const [activeTab, setActiveTab] = useState<AnalyticsTab>('overview');
+  const [activeTab, setActiveTab] = useState<AnalyticsTab>('current');
   const [timePeriod, setTimePeriod] = useState<TimePeriod>('monthly');
   const [selectedProductId, setSelectedProductId] = useState<number | undefined>();
   const [startDate, setStartDate] = useState<string>('');
@@ -168,6 +170,12 @@ const Dashboard = () => {
 
             <div className="analytics-tabs">
               <button
+                className={`tab-button ${activeTab === 'current' ? 'active' : ''}`}
+                onClick={() => setActiveTab('current')}
+              >
+                💰 Current Prices
+              </button>
+              <button
                 className={`tab-button ${activeTab === 'overview' ? 'active' : ''}`}
                 onClick={() => setActiveTab('overview')}
               >
@@ -211,8 +219,18 @@ const Dashboard = () => {
             </div>
 
             <div className="analytics-content">
+              {activeTab === 'current' && (
+                <CurrentPricesPanel />
+              )}
+
               {activeTab === 'overview' && (
                 <>
+                  {selectedProductId && (
+                    <LastPriceCard 
+                      productId={selectedProductId}
+                      productName={products.find(p => p.id === selectedProductId)?.name}
+                    />
+                  )}
                   <StatisticsPanel
                     statistics={statistics}
                     loading={statsLoading}

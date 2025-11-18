@@ -101,5 +101,45 @@ export class PriceService {
     });
     return count > 0;
   }
+
+  async getTodayPrices(): Promise<Price[]> {
+    const today = new Date();
+    const slTime = new Date(
+      today.toLocaleString('en-US', { timeZone: 'Asia/Colombo' }),
+    );
+    const dateStr = slTime.toISOString().split('T')[0];
+    const todayDate = new Date(dateStr);
+
+    return this.priceRepository.find({
+      where: { date: todayDate },
+      relations: ['product'],
+      order: { productId: 'ASC' },
+    });
+  }
+
+  async getLatestPrices(): Promise<Price[]> {
+    // Get the most recent date with prices
+    const latestPrice = await this.priceRepository.findOne({
+      order: { date: 'DESC' },
+    });
+
+    if (!latestPrice) {
+      return [];
+    }
+
+    return this.priceRepository.find({
+      where: { date: latestPrice.date },
+      relations: ['product'],
+      order: { productId: 'ASC' },
+    });
+  }
+
+  async getLastPriceForProduct(productId: number): Promise<Price | null> {
+    return this.priceRepository.findOne({
+      where: { productId },
+      relations: ['product'],
+      order: { date: 'DESC' },
+    });
+  }
 }
 

@@ -213,6 +213,22 @@ export const apiService = {
     const response = await api.get('/analytics/distribution', { params });
     return response.data;
   },
+
+  // Current Prices
+  getTodayPrices: async () => {
+    const response = await api.get('/prices/today');
+    return response.data;
+  },
+
+  getLatestPrices: async () => {
+    const response = await api.get('/prices/latest');
+    return response.data;
+  },
+
+  getLastPriceForProduct: async (productId: number) => {
+    const response = await api.get(`/prices/product/${productId}/last`);
+    return response.data;
+  },
 };
 
 export default api;
