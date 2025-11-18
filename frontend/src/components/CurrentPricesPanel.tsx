@@ -1,18 +1,25 @@
+import { useState, useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { apiService } from '../services/api';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
 import LoadingSkeleton from './LoadingSkeleton';
 import EmptyState from './EmptyState';
 import DataRefreshIndicator from './DataRefreshIndicator';
 import './CurrentPricesPanel.css';
 
+type SortOption = 'name-asc' | 'name-desc' | 'price-asc' | 'price-desc' | 'date-asc' | 'date-desc';
+type FilterOption = 'all' | 'vegetable' | 'fruit' | 'rice';
+
 const CurrentPricesPanel = () => {
+  const [sortBy, setSortBy] = useState<SortOption>('name-asc');
+  const [filterBy, setFilterBy] = useState<FilterOption>('all');
+  const [selectedCard, setSelectedCard] = useState<number | null>(null);
+
   const { data: todayData, isLoading: todayLoading } = useQuery(
     'today-prices',
     () => apiService.getTodayPrices(),
     { 
       enabled: true,
-      refetchInterval: 300000, // Refetch every 5 minutes
+      refetchInterval: 300000,
     }
   );
 
@@ -29,10 +36,49 @@ const CurrentPricesPanel = () => {
   const hasTodayData = todayData?.data && todayData.data.length > 0;
   const hasLatestData = latestData?.data && latestData.data.length > 0;
 
-  // Use today's data if available, otherwise use latest
   const currentData = hasTodayData ? todayData : latestData;
   const isToday = hasTodayData;
   const displayDate = currentData?.date || 'N/A';
+
+  // Filter and sort data
+  const filteredAndSortedData = useMemo(() => {
+    if (!currentData?.data) return [];
+
+    let filtered = [...currentData.data];
+
+    // Apply filter
+    if (filterBy !== 'all') {
+      filtered = filtered.filter((price: any) => {
+        const productType = price.product?.type?.toLowerCase();
+        return productType === filterBy;
+      });
+    }
+
+    // Apply sort
+    filtered.sort((a: any, b: any) => {
+      const avgPriceA = (Number(a.minPrice) + Number(a.maxPrice)) / 2;
+      const avgPriceB = (Number(b.minPrice) + Number(b.maxPrice)) / 2;
+
+      switch (sortBy) {
+        case 'name-asc':
+          return a.product?.name?.localeCompare(b.product?.name || '') || 0;
+        case 'name-desc':
+          return b.product?.name?.localeCompare(a.product?.name || '') || 0;
+        case 'price-asc':
+          return avgPriceA - avgPriceB;
+        case 'price-desc':
+          return avgPriceB - avgPriceA;
+        case 'date-asc':
+          return new Date(a.date).getTime() - new Date(b.date).getTime();
+        case 'date-desc':
+          return new Date(b.date).getTime() - new Date(a.date).getTime();
+        default:
+          return 0;
+      }
+    });
+
+    return filtered;
+  }, [currentData, sortBy, filterBy]);
 
   if (isLoading) {
     return (
@@ -43,9 +89,7 @@ const CurrentPricesPanel = () => {
             <p className="current-prices-subtitle">Latest available prices</p>
           </div>
         </div>
-        <LoadingSkeleton type="stat" count={4} />
-        <LoadingSkeleton type="chart" count={1} />
-        <LoadingSkeleton type="card" count={6} />
+        <LoadingSkeleton type="card" count={4} />
       </div>
     );
   }
@@ -62,47 +106,17 @@ const CurrentPricesPanel = () => {
     );
   }
 
-  const chartData = currentData.data.map((price: any) => ({
-    name: price.product.name.length > 15 ? price.product.name.substring(0, 15) + '...' : price.product.name,
-    fullName: price.product.name,
-    minPrice: Number(price.minPrice),
-    maxPrice: Number(price.maxPrice),
-    avgPrice: (Number(price.minPrice) + Number(price.maxPrice)) / 2,
-    productType: price.product.type,
-  })).sort((a: any, b: any) => b.avgPrice - a.avgPrice);
-
-  const getBarColor = (value: number, maxValue: number) => {
-    const ratio = value / maxValue;
-    if (ratio > 0.8) return '#ef4444';
-    if (ratio > 0.6) return '#f59e0b';
-    if (ratio > 0.4) return '#10b981';
-    return '#3b82f6';
+  const handleCardClick = (priceId: number) => {
+    setSelectedCard(selectedCard === priceId ? null : priceId);
   };
 
-  const maxPrice = Math.max(...chartData.map((d: any) => d.maxPrice));
-
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload;
-      return (
-        <div className="custom-tooltip">
-          <p className="tooltip-label">{data.fullName}</p>
-          <p className="tooltip-item" style={{ color: '#ef4444' }}>
-            Max Price: Rs. {data.maxPrice.toFixed(2)}
-          </p>
-          <p className="tooltip-item" style={{ color: '#10b981' }}>
-            Min Price: Rs. {data.minPrice.toFixed(2)}
-          </p>
-          <p className="tooltip-item" style={{ color: '#3b82f6' }}>
-            Avg Price: Rs. {data.avgPrice.toFixed(2)}
-          </p>
-          <p className="tooltip-item" style={{ color: '#6b7280' }}>
-            Type: {data.productType}
-          </p>
-        </div>
-      );
-    }
-    return null;
+  const getPriceRangePercentage = (minPrice: number, maxPrice: number, avgPrice: number) => {
+    if (maxPrice === minPrice) return { min: 0, avg: 50, max: 100 };
+    const range = maxPrice - minPrice;
+    const minPos = 0;
+    const avgPos = ((avgPrice - minPrice) / range) * 100;
+    const maxPos = 100;
+    return { min: minPos, avg: avgPos, max: maxPos };
   };
 
   return (
@@ -125,124 +139,176 @@ const CurrentPricesPanel = () => {
         </div>
       </div>
 
-      <div className="current-prices-stats">
-        <div className="price-stat-card">
-          <div className="stat-icon">📊</div>
-          <div className="stat-content">
-            <div className="stat-label">Total Products</div>
-            <div className="stat-value">{currentData.data.length}</div>
-          </div>
+      {/* Controls */}
+      <div className="current-prices-controls">
+        <div className="control-group">
+          <label htmlFor="sort-select">Sort by:</label>
+          <select 
+            id="sort-select"
+            value={sortBy} 
+            onChange={(e) => setSortBy(e.target.value as SortOption)}
+            className="control-select"
+          >
+            <option value="name-asc">Name (A-Z)</option>
+            <option value="name-desc">Name (Z-A)</option>
+            <option value="price-asc">Price (Low to High)</option>
+            <option value="price-desc">Price (High to Low)</option>
+            <option value="date-desc">Date (Newest First)</option>
+            <option value="date-asc">Date (Oldest First)</option>
+          </select>
         </div>
-        <div className="price-stat-card">
-          <div className="stat-icon">⬆️</div>
-          <div className="stat-content">
-            <div className="stat-label">Highest Price</div>
-            <div className="stat-value">Rs. {maxPrice.toFixed(2)}</div>
-          </div>
+
+        <div className="control-group">
+          <label htmlFor="filter-select">Filter by:</label>
+          <select 
+            id="filter-select"
+            value={filterBy} 
+            onChange={(e) => setFilterBy(e.target.value as FilterOption)}
+            className="control-select"
+          >
+            <option value="all">All Types</option>
+            <option value="vegetable">Vegetables</option>
+            <option value="fruit">Fruits</option>
+          </select>
         </div>
-        <div className="price-stat-card">
-          <div className="stat-icon">⬇️</div>
-          <div className="stat-content">
-            <div className="stat-label">Lowest Price</div>
-            <div className="stat-value">Rs. {Math.min(...chartData.map((d: any) => d.minPrice)).toFixed(2)}</div>
-          </div>
-        </div>
-        <div className="price-stat-card">
-          <div className="stat-icon">💰</div>
-          <div className="stat-content">
-            <div className="stat-label">Average Price</div>
-            <div className="stat-value">
-              Rs. {(chartData.reduce((sum: number, d: any) => sum + d.avgPrice, 0) / chartData.length).toFixed(2)}
-            </div>
-          </div>
+
+        <div className="results-count">
+          Showing {filteredAndSortedData.length} of {currentData.data.length} products
         </div>
       </div>
 
-      <div className="current-prices-chart enhanced">
-        <div className="chart-title-section">
-          <h3>📊 Price Comparison</h3>
-          <div className="chart-info">
-            <span className="info-item">Min/Max prices by product</span>
-          </div>
-        </div>
-        <ResponsiveContainer width="100%" height={500}>
-          <BarChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 100 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-            <XAxis 
-              dataKey="name" 
-              angle={-45} 
-              textAnchor="end" 
-              height={120}
-              stroke="#6b7280"
-              style={{ fontSize: '11px' }}
-              tick={{ fill: '#6b7280' }}
-            />
-            <YAxis 
-              stroke="#6b7280"
-              style={{ fontSize: '12px' }}
-              tick={{ fill: '#6b7280' }}
-              label={{ value: 'Price (Rs.)', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fill: '#6b7280' } }}
-            />
-            <Tooltip content={<CustomTooltip />} />
-            <Legend 
-              wrapperStyle={{ paddingTop: '20px' }}
-              iconType="square"
-            />
-            <Bar dataKey="maxPrice" name="Max Price (Rs.)" radius={[8, 8, 0, 0]}>
-              {chartData.map((entry: any, index: number) => (
-                <Cell key={`max-${index}`} fill={getBarColor(entry.maxPrice, maxPrice)} />
-              ))}
-            </Bar>
-            <Bar dataKey="minPrice" name="Min Price (Rs.)" radius={[8, 8, 0, 0]}>
-              {chartData.map((entry: any, index: number) => (
-                <Cell key={`min-${index}`} fill="#10b981" />
-              ))}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-
+      {/* Price Cards Grid */}
       <div className="current-prices-grid">
-        {currentData.data.map((price: any) => {
-          const avgPrice = (Number(price.minPrice) + Number(price.maxPrice)) / 2;
+        {filteredAndSortedData.map((price: any) => {
+          const minPrice = Number(price.minPrice);
+          const maxPrice = Number(price.maxPrice);
+          const avgPrice = (minPrice + maxPrice) / 2;
+          const priceRange = maxPrice - minPrice;
+          const rangePercentages = getPriceRangePercentage(minPrice, maxPrice, avgPrice);
+          const isSelected = selectedCard === price.id;
+
           return (
-            <div key={price.id} className="price-card">
+            <div 
+              key={price.id} 
+              className={`price-card ${isSelected ? 'selected' : ''}`}
+              onClick={() => handleCardClick(price.id)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleCardClick(price.id);
+                }
+              }}
+            >
               <div className="price-card-header">
                 <div className="product-info">
-                  <h4>{price.product.name}</h4>
-                  <span className="product-type">{price.product.type}</span>
+                  <h3 className="product-name">{price.product?.name || 'Unknown'}</h3>
+                  <span className="product-type">{price.product?.type || 'N/A'}</span>
                 </div>
                 <div className="price-date">
-                  {new Date(price.date).toLocaleDateString()}
+                  {new Date(price.date).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                  })}
                 </div>
               </div>
-              <div className="price-card-body">
-                <div className="price-item min">
-                  <span className="price-label">Min Price</span>
-                  <span className="price-value">Rs. {Number(price.minPrice).toFixed(2)}</span>
+
+              <div className="price-card-content">
+                <div className="price-display">
+                  <div className="price-item price-min">
+                    <div className="price-label">
+                      <span className="price-icon">⬇️</span>
+                      <span>Min</span>
+                    </div>
+                    <div className="price-value">Rs. {minPrice.toFixed(2)}</div>
+                  </div>
+
+                  <div className="price-item price-avg">
+                    <div className="price-label">
+                      <span className="price-icon">💰</span>
+                      <span>Average</span>
+                    </div>
+                    <div className="price-value">Rs. {avgPrice.toFixed(2)}</div>
+                  </div>
+
+                  <div className="price-item price-max">
+                    <div className="price-label">
+                      <span className="price-icon">⬆️</span>
+                      <span>Max</span>
+                    </div>
+                    <div className="price-value">Rs. {maxPrice.toFixed(2)}</div>
+                  </div>
                 </div>
-                <div className="price-item avg">
-                  <span className="price-label">Average</span>
-                  <span className="price-value">Rs. {avgPrice.toFixed(2)}</span>
-                </div>
-                <div className="price-item max">
-                  <span className="price-label">Max Price</span>
-                  <span className="price-value">Rs. {Number(price.maxPrice).toFixed(2)}</span>
+
+                {/* Enhanced Price Range Visualization */}
+                <div className="price-range-visualization">
+                  <div className="range-header">
+                    <span className="range-label">Price Range</span>
+                    <span className="range-value">Rs. {priceRange.toFixed(2)}</span>
+                  </div>
+                  <div className="range-bar-container">
+                    <div className="range-bar">
+                      <div 
+                        className="range-segment range-min" 
+                        style={{ width: `${rangePercentages.avg}%` }}
+                      />
+                      <div 
+                        className="range-segment range-max" 
+                        style={{ 
+                          width: `${100 - rangePercentages.avg}%`,
+                          left: `${rangePercentages.avg}%`
+                        }}
+                      />
+                    </div>
+                    <div className="range-markers">
+                      <div 
+                        className="range-marker marker-min" 
+                        style={{ left: '0%' }}
+                        title={`Min: Rs. ${minPrice.toFixed(2)}`}
+                      />
+                      <div 
+                        className="range-marker marker-avg" 
+                        style={{ left: `${rangePercentages.avg}%` }}
+                        title={`Avg: Rs. ${avgPrice.toFixed(2)}`}
+                      />
+                      <div 
+                        className="range-marker marker-max" 
+                        style={{ left: '100%' }}
+                        title={`Max: Rs. ${maxPrice.toFixed(2)}`}
+                      />
+                    </div>
+                  </div>
+                  <div className="range-labels">
+                    <span className="range-label-min">Rs. {minPrice.toFixed(2)}</span>
+                    <span className="range-label-max">Rs. {maxPrice.toFixed(2)}</span>
+                  </div>
                 </div>
               </div>
-              <div className="price-range-bar">
-                <div 
-                  className="price-range-fill" 
-                  style={{ 
-                    width: `${((avgPrice - Number(price.minPrice)) / (Number(price.maxPrice) - Number(price.minPrice))) * 100}%`,
-                    left: '0%'
-                  }}
-                />
-              </div>
+
+              {isSelected && (
+                <div className="price-card-details">
+                  <div className="detail-row">
+                    <span className="detail-label">Price Spread:</span>
+                    <span className="detail-value">{((priceRange / avgPrice) * 100).toFixed(1)}%</span>
+                  </div>
+                  <div className="detail-row">
+                    <span className="detail-label">Product ID:</span>
+                    <span className="detail-value">{price.productId}</span>
+                  </div>
+                </div>
+              )}
             </div>
           );
         })}
       </div>
+
+      {filteredAndSortedData.length === 0 && (
+        <div className="no-results">
+          <p>No products found matching your filters.</p>
+        </div>
+      )}
 
       <DataRefreshIndicator 
         lastUpdated={new Date(displayDate)} 
@@ -253,4 +319,3 @@ const CurrentPricesPanel = () => {
 };
 
 export default CurrentPricesPanel;
-

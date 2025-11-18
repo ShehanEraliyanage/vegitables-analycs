@@ -119,16 +119,19 @@ export class PriceService {
 
   async getLatestPrices(): Promise<Price[]> {
     // Get the most recent date with prices
-    const latestPrice = await this.priceRepository.findOne({
+    const latestPrices = await this.priceRepository.find({
       order: { date: 'DESC' },
+      take: 1,
     });
 
-    if (!latestPrice) {
+    if (!latestPrices || latestPrices.length === 0) {
       return [];
     }
 
+    const latestDate = latestPrices[0].date;
+
     return this.priceRepository.find({
-      where: { date: latestPrice.date },
+      where: { date: latestDate },
       relations: ['product'],
       order: { productId: 'ASC' },
     });
