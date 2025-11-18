@@ -33,25 +33,68 @@ const DailySyncButton = () => {
     {
       onSuccess: (data) => {
         Swal.close();
-        Swal.fire({
-          icon: 'success',
-          title: 'Daily Sync Completed!',
-          html: `
-            <div style="text-align: center; padding: 1rem 0;">
-              <p style="color: #6b7280; margin-bottom: 1rem;">
-                ${data.message || 'Today\'s data has been successfully fetched.'}
-              </p>
-            </div>
-          `,
-          confirmButtonColor: '#667eea',
-          confirmButtonText: 'Great!',
-          timer: 3000,
-        });
+        
+        // Check if data was actually found
+        if (data.dataFound === false) {
+          // No data available - show warning
+          Swal.fire({
+            icon: 'info',
+            title: 'No Data Available',
+            html: `
+              <div style="text-align: center; padding: 1rem 0;">
+                <p style="color: #6b7280;">
+                  No price data available for today. Please try again later.
+                </p>
+              </div>
+            `,
+            confirmButtonColor: '#667eea',
+            confirmButtonText: 'OK',
+            timer: 4000,
+          });
+        } else if (data.dataFound === true) {
+          // Data found and synced - show success
+          Swal.fire({
+            icon: 'success',
+            title: 'Daily Sync Completed!',
+            html: `
+              <div style="text-align: center; padding: 1rem 0;">
+                <p style="color: #6b7280; margin-bottom: 1rem;">
+                  ${data.message || 'Today\'s data has been successfully fetched.'}
+                </p>
+                ${data.count ? `<p style="color: #10b981; font-weight: 600; margin-top: 0.5rem;">
+                  ${data.count} price entries synced
+                </p>` : ''}
+              </div>
+            `,
+            confirmButtonColor: '#667eea',
+            confirmButtonText: 'Great!',
+            timer: 3000,
+          });
+        } else {
+          // Fallback for older API responses
+          Swal.fire({
+            icon: 'success',
+            title: 'Daily Sync Completed!',
+            html: `
+              <div style="text-align: center; padding: 1rem 0;">
+                <p style="color: #6b7280; margin-bottom: 1rem;">
+                  ${data.message || 'Today\'s data has been successfully fetched.'}
+                </p>
+              </div>
+            `,
+            confirmButtonColor: '#667eea',
+            confirmButtonText: 'Great!',
+            timer: 3000,
+          });
+        }
+        
         // Refetch data and date check
         setTimeout(() => {
           queryClient.invalidateQueries('products');
           queryClient.invalidateQueries('statistics');
           queryClient.invalidateQueries('analytics');
+          queryClient.invalidateQueries('today-prices');
+          queryClient.invalidateQueries('latest-prices');
           refetchDateCheck();
         }, 1000);
       },

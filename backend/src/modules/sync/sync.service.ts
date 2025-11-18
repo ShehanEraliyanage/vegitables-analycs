@@ -92,7 +92,7 @@ export class SyncService {
     }
   }
 
-  async syncDate(date: Date, retries = 3): Promise<boolean> {
+  async syncDate(date: Date, retries = 3): Promise<{ success: boolean; dataFound: boolean; count: number }> {
     const dateStr = date.toISOString().split('T')[0];
 
     for (let attempt = 1; attempt <= retries; attempt++) {
@@ -102,22 +102,22 @@ export class SyncService {
         
         if (data.length === 0) {
           this.logger.warn(`No data found for date ${dateStr}`);
-          return true;
+          return { success: true, dataFound: false, count: 0 };
         }
 
         await this.processPriceData(data);
         this.logger.log(`Successfully synced ${data.length} entries for ${dateStr}`);
-        return true;
+        return { success: true, dataFound: true, count: data.length };
       } catch (error) {
         if (attempt === retries) {
           this.logger.error(`Failed to sync ${dateStr} after ${retries} attempts`);
-          return false;
+          return { success: false, dataFound: false, count: 0 };
         }
         // Wait before retry (exponential backoff)
         await new Promise((resolve) => setTimeout(resolve, 1000 * attempt));
       }
     }
-    return false;
+    return { success: false, dataFound: false, count: 0 };
   }
 
   async initialSync(): Promise<{ success: boolean; message: string }> {
@@ -144,8 +144,8 @@ export class SyncService {
       let processedDays = 0;
 
       while (currentDate <= endDate) {
-        const success = await this.syncDate(new Date(currentDate));
-        if (success) {
+        const result = await this.syncDate(new Date(currentDate));
+        if (result.success) {
           successCount++;
         } else {
           failCount++;
@@ -179,7 +179,7 @@ export class SyncService {
     }
   }
 
-  async dailySync(): Promise<{ success: boolean; message: string }> {
+  async dailySync(): Promise<{ success: boolean; message: string; dataFound?: boolean; count?: number }> {
     const today = new Date();
     // Set to Sri Lanka timezone
     const slTime = new Date(
@@ -190,17 +190,38 @@ export class SyncService {
     this.logger.log(`Starting daily sync for ${dateStr}`);
 
     try {
-      const success = await this.syncDate(slTime);
-      if (success) {
-        return { success: true, message: `Daily sync completed for ${dateStr}` };
+      const result = await this.syncDate(slTime);
+      if (result.success) {
+        if (result.dataFound) {
+          return { 
+            success: true, 
+            message: `Daily sync completed for ${dateStr}. Synced ${result.count} price entries.`,
+            dataFound: true,
+            count: result.count
+          };
+        } else {
+          return { 
+            success: true, 
+            message: `No data available for ${dateStr}`,
+            dataFound: false,
+            count: 0
+          };
+        }
       } else {
-        return { success: false, message: `Daily sync failed for ${dateStr}` };
+        return { 
+          success: false, 
+          message: `Daily sync failed for ${dateStr}. Please try again later.`,
+          dataFound: false,
+          count: 0
+        };
       }
     } catch (error) {
       this.logger.error(`Daily sync failed: ${error.message}`);
       return {
         success: false,
         message: `Daily sync failed: ${error.message}`,
+        dataFound: false,
+        count: 0
       };
     }
   }
