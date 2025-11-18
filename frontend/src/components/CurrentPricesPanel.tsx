@@ -169,6 +169,7 @@ const CurrentPricesPanel = () => {
             <option value="all">All Types</option>
             <option value="vegetable">Vegetables</option>
             <option value="fruit">Fruits</option>
+            <option value="rice">Rice</option>
           </select>
         </div>
 
