@@ -1,0 +1,66 @@
+.chart-panel {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.chart-panel h2 {
+  margin-bottom: 2rem;
+  color: #333;
+  font-size: 1.5rem;
+}
+
+.charts-container {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.chart-wrapper {
+  width: 100%;
+}
+
+.chart-wrapper h3 {
+  margin-bottom: 1rem;
+  color: #555;
+  font-size: 1.2rem;
+}
+
+.analytics-summary {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.analytics-summary h3 {
+  margin-bottom: 1rem;
+  color: #333;
+  font-size: 1.2rem;
+}
+
+.analytics-summary p {
+  margin: 0.5rem 0;
+  color: #666;
+  font-size: 1rem;
+}
+
+.loading,
+.no-data {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+  .chart-panel {
+    padding: 1rem;
+  }
+
+  .charts-container {
+    gap: 2rem;
+  }
+}
+
