@@ -16,6 +16,7 @@ import {
   ReferenceLine,
 } from 'recharts';
 import { AnalyticsResponse } from '../services/api';
+import LoadingSkeleton from './LoadingSkeleton';
 import './ChartPanel.css';
 
 interface ChartPanelProps {
@@ -44,10 +45,13 @@ const ChartPanel = ({ analytics, loading, timePeriod }: ChartPanelProps) => {
   if (loading) {
     return (
       <div className="chart-panel">
-        <div className="loading-container">
-          <div className="loading-spinner"></div>
-          <div className="loading">Loading charts...</div>
+        <div className="chart-header">
+          <div>
+            <h2>📈 Price Analysis Dashboard</h2>
+            <p className="chart-subtitle">{timePeriod.charAt(0).toUpperCase() + timePeriod.slice(1)} Analysis</p>
+          </div>
         </div>
+        <LoadingSkeleton type="chart" count={3} />
       </div>
     );
   }

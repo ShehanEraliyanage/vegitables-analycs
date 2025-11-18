@@ -1,6 +1,9 @@
 import { useQuery } from 'react-query';
 import { apiService } from '../services/api';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
+import LoadingSkeleton from './LoadingSkeleton';
+import EmptyState from './EmptyState';
+import DataRefreshIndicator from './DataRefreshIndicator';
 import './CurrentPricesPanel.css';
 
 const CurrentPricesPanel = () => {
@@ -34,10 +37,15 @@ const CurrentPricesPanel = () => {
   if (isLoading) {
     return (
       <div className="current-prices-panel">
-        <div className="loading-container">
-          <div className="loading-spinner"></div>
-          <div className="loading">Loading current prices...</div>
+        <div className="current-prices-header">
+          <div>
+            <h2>💰 Current Market Prices</h2>
+            <p className="current-prices-subtitle">Latest available prices</p>
+          </div>
         </div>
+        <LoadingSkeleton type="stat" count={4} />
+        <LoadingSkeleton type="chart" count={1} />
+        <LoadingSkeleton type="card" count={6} />
       </div>
     );
   }
@@ -45,11 +53,11 @@ const CurrentPricesPanel = () => {
   if (!currentData || !currentData.data || currentData.data.length === 0) {
     return (
       <div className="current-prices-panel">
-        <div className="no-data">
-          <div className="no-data-icon">💰</div>
-          <div>No current price data available</div>
-          <div className="no-data-hint">Prices will appear after daily sync</div>
-        </div>
+        <EmptyState
+          icon="💰"
+          title="No Current Price Data"
+          message="No price data is currently available. Prices will appear after the daily sync completes."
+        />
       </div>
     );
   }
@@ -235,6 +243,11 @@ const CurrentPricesPanel = () => {
           );
         })}
       </div>
+
+      <DataRefreshIndicator 
+        lastUpdated={new Date(displayDate)} 
+        isRefreshing={isLoading}
+      />
     </div>
   );
 };

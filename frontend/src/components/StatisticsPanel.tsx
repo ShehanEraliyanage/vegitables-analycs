@@ -1,4 +1,5 @@
 import { Statistics } from '../services/api';
+import LoadingSkeleton from './LoadingSkeleton';
 import './StatisticsPanel.css';
 
 interface StatisticsPanelProps {
@@ -10,7 +11,11 @@ const StatisticsPanel = ({ statistics, loading }: StatisticsPanelProps) => {
   if (loading) {
     return (
       <div className="statistics-panel">
-        <div className="loading">Loading statistics...</div>
+        <div className="statistics-header">
+          <h2>📊 Overview Statistics</h2>
+          <p className="statistics-subtitle">Comprehensive price analytics at a glance</p>
+        </div>
+        <LoadingSkeleton type="stat" count={10} />
       </div>
     );
   }

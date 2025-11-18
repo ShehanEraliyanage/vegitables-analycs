@@ -1,6 +1,8 @@
 import { useQuery } from 'react-query';
 import { apiService } from '../services/api';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
+import LoadingSkeleton from './LoadingSkeleton';
+import EmptyState from './EmptyState';
 import './TrendsPanel.css';
 
 interface TrendsPanelProps {
@@ -35,10 +37,13 @@ const TrendsPanel = ({ startDate, endDate, productId }: TrendsPanelProps) => {
   if (isLoading) {
     return (
       <div className="trends-panel">
-        <div className="loading-container">
-          <div className="loading-spinner"></div>
-          <div className="loading">Loading trends...</div>
+        <div className="trends-header">
+          <div>
+            <h2>📈 Price Trends Analysis</h2>
+            <p className="trends-subtitle">Track price movements and volatility across products</p>
+          </div>
         </div>
+        <LoadingSkeleton type="card" count={6} />
       </div>
     );
   }
@@ -46,10 +51,11 @@ const TrendsPanel = ({ startDate, endDate, productId }: TrendsPanelProps) => {
   if (!data || !data.trends || data.trends.length === 0) {
     return (
       <div className="trends-panel">
-        <div className="no-data">
-          <div className="no-data-icon">📈</div>
-          <div>No trends data available</div>
-        </div>
+        <EmptyState
+          icon="📈"
+          title="No Trends Data Available"
+          message="No price trend data found for the selected period. Try adjusting your filters or date range."
+        />
       </div>
     );
   }

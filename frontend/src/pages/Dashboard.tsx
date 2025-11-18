@@ -13,6 +13,11 @@ import CurrentPricesPanel from '../components/CurrentPricesPanel';
 import LastPriceCard from '../components/LastPriceCard';
 import SyncButton from '../components/SyncButton';
 import DailySyncButton from '../components/DailySyncButton';
+import KeyboardShortcuts from '../components/KeyboardShortcuts';
+import SmartTooltip from '../components/SmartTooltip';
+import QuickActions from '../components/QuickActions';
+import Breadcrumbs from '../components/Breadcrumbs';
+import { showSuccessToast } from '../components/ToastNotification';
 import './Dashboard.css';
 
 type TimePeriod = 'weekly' | 'monthly' | 'quarterly' | 'six-month' | 'annual';
@@ -20,10 +25,12 @@ type AnalyticsTab = 'current' | 'overview' | 'trends' | 'performers' | 'comparis
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState<AnalyticsTab>('current');
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const [timePeriod, setTimePeriod] = useState<TimePeriod>('monthly');
   const [selectedProductId, setSelectedProductId] = useState<number | undefined>();
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
+  const [showKeyboardShortcuts, setShowKeyboardShortcuts] = useState(false);
 
   const { data: products = [], isLoading: productsLoading } = useQuery<Product[]>(
     'products',
@@ -112,6 +119,26 @@ const Dashboard = () => {
     setStartDate(start.toISOString().split('T')[0]);
   }, [timePeriod]);
 
+  // Handle keyboard shortcuts
+  const handleShortcut = (key: string) => {
+    if (key === '1') setActiveTab('current');
+    else if (key === '2') setActiveTab('overview');
+    else if (key === '3') setActiveTab('trends');
+    else if (key === '4') setActiveTab('performers');
+    else if (key === '5') setActiveTab('comparison');
+    else if (key === '6') setActiveTab('seasonal');
+    else if (key === '7') setActiveTab('distribution');
+  };
+
+  // Handle tab change with smooth transition
+  const handleTabChange = (tab: AnalyticsTab) => {
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setActiveTab(tab);
+      setIsTransitioning(false);
+    }, 150);
+  };
+
   const exportToCSV = () => {
     if (!analytics || !analytics.data) return;
     
@@ -139,13 +166,62 @@ const Dashboard = () => {
     a.download = `analytics-${timePeriod}-${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
     window.URL.revokeObjectURL(url);
+    showSuccessToast('Data exported successfully!');
   };
+
+  const quickActions = [
+    {
+      id: 'export',
+      label: 'Export Data',
+      icon: '📥',
+      onClick: exportToCSV,
+      shortcut: 'E',
+    },
+    {
+      id: 'refresh',
+      label: 'Refresh Data',
+      icon: '🔄',
+      onClick: () => {
+        window.location.reload();
+      },
+      shortcut: 'R',
+    },
+    {
+      id: 'clear-filters',
+      label: 'Clear Filters',
+      icon: '🗑️',
+      onClick: () => {
+        setSelectedProductId(undefined);
+        setStartDate('');
+        setEndDate('');
+      },
+    },
+  ];
 
   return (
     <div className="dashboard">
+      <KeyboardShortcuts 
+        onShortcut={handleShortcut} 
+        isOpen={showKeyboardShortcuts}
+        onToggle={setShowKeyboardShortcuts}
+      />
+      
       <header className="dashboard-header">
-        <h1>Vegetables & Fruits Price Analytics</h1>
-        <p>Sri Lanka Market Prices - Comprehensive Analytics Platform</p>
+        <div className="header-content">
+          <div>
+            <h1>Vegetables & Fruits Price Analytics</h1>
+            <p>Sri Lanka Market Prices - Comprehensive Analytics Platform</p>
+          </div>
+          <SmartTooltip content="Click to see keyboard shortcuts">
+            <button 
+              className="help-button" 
+              onClick={() => setShowKeyboardShortcuts(true)}
+              aria-label="Keyboard shortcuts"
+            >
+              <span>?</span>
+            </button>
+          </SmartTooltip>
+        </div>
       </header>
 
       <div className="dashboard-content">
@@ -168,57 +244,87 @@ const Dashboard = () => {
               onEndDateChange={setEndDate}
             />
 
+            <Breadcrumbs
+              items={[
+                { label: 'Dashboard', onClick: () => handleTabChange('current') },
+                { label: activeTab.charAt(0).toUpperCase() + activeTab.slice(1).replace('-', ' ') },
+              ]}
+            />
+
             <div className="analytics-tabs">
-              <button
-                className={`tab-button ${activeTab === 'current' ? 'active' : ''}`}
-                onClick={() => setActiveTab('current')}
-              >
-                💰 Current Prices
-              </button>
-              <button
-                className={`tab-button ${activeTab === 'overview' ? 'active' : ''}`}
-                onClick={() => setActiveTab('overview')}
-              >
-                Overview
-              </button>
-              <button
-                className={`tab-button ${activeTab === 'trends' ? 'active' : ''}`}
-                onClick={() => setActiveTab('trends')}
-              >
-                Price Trends
-              </button>
-              <button
-                className={`tab-button ${activeTab === 'performers' ? 'active' : ''}`}
-                onClick={() => setActiveTab('performers')}
-              >
-                Top Performers
-              </button>
-              <button
-                className={`tab-button ${activeTab === 'comparison' ? 'active' : ''}`}
-                onClick={() => setActiveTab('comparison')}
-              >
-                Compare Products
-              </button>
-              <button
-                className={`tab-button ${activeTab === 'seasonal' ? 'active' : ''}`}
-                onClick={() => setActiveTab('seasonal')}
-              >
-                Seasonal Analysis
-              </button>
-              <button
-                className={`tab-button ${activeTab === 'distribution' ? 'active' : ''}`}
-                onClick={() => setActiveTab('distribution')}
-              >
-                Price Distribution
-              </button>
-              {activeTab === 'overview' && (
-                <button className="export-button" onClick={exportToCSV}>
-                  Export CSV
+              <SmartTooltip content="Press 1 to switch (Current Prices)">
+                <button
+                  className={`tab-button ${activeTab === 'current' ? 'active' : ''}`}
+                  onClick={() => handleTabChange('current')}
+                  aria-label="Current Prices"
+                >
+                  💰 Current Prices
                 </button>
+              </SmartTooltip>
+              <SmartTooltip content="Press 2 to switch (Overview)">
+                <button
+                  className={`tab-button ${activeTab === 'overview' ? 'active' : ''}`}
+                  onClick={() => handleTabChange('overview')}
+                  aria-label="Overview"
+                >
+                  Overview
+                </button>
+              </SmartTooltip>
+              <SmartTooltip content="Press 3 to switch (Price Trends)">
+                <button
+                  className={`tab-button ${activeTab === 'trends' ? 'active' : ''}`}
+                  onClick={() => handleTabChange('trends')}
+                  aria-label="Price Trends"
+                >
+                  Price Trends
+                </button>
+              </SmartTooltip>
+              <SmartTooltip content="Press 4 to switch (Top Performers)">
+                <button
+                  className={`tab-button ${activeTab === 'performers' ? 'active' : ''}`}
+                  onClick={() => handleTabChange('performers')}
+                  aria-label="Top Performers"
+                >
+                  Top Performers
+                </button>
+              </SmartTooltip>
+              <SmartTooltip content="Press 5 to switch (Compare Products)">
+                <button
+                  className={`tab-button ${activeTab === 'comparison' ? 'active' : ''}`}
+                  onClick={() => handleTabChange('comparison')}
+                  aria-label="Compare Products"
+                >
+                  Compare Products
+                </button>
+              </SmartTooltip>
+              <SmartTooltip content="Press 6 to switch (Seasonal Analysis)">
+                <button
+                  className={`tab-button ${activeTab === 'seasonal' ? 'active' : ''}`}
+                  onClick={() => handleTabChange('seasonal')}
+                  aria-label="Seasonal Analysis"
+                >
+                  Seasonal Analysis
+                </button>
+              </SmartTooltip>
+              <SmartTooltip content="Press 7 to switch (Price Distribution)">
+                <button
+                  className={`tab-button ${activeTab === 'distribution' ? 'active' : ''}`}
+                  onClick={() => handleTabChange('distribution')}
+                  aria-label="Price Distribution"
+                >
+                  Price Distribution
+                </button>
+              </SmartTooltip>
+              {activeTab === 'overview' && (
+                <SmartTooltip content="Export current analytics data as CSV">
+                  <button className="export-button" onClick={exportToCSV}>
+                    📥 Export CSV
+                  </button>
+                </SmartTooltip>
               )}
             </div>
 
-            <div className="analytics-content">
+            <div className={`analytics-content ${isTransitioning ? 'transitioning' : ''}`}>
               {activeTab === 'current' && (
                 <CurrentPricesPanel />
               )}
@@ -283,6 +389,8 @@ const Dashboard = () => {
           </>
         )}
       </div>
+
+      {hasData && <QuickActions actions={quickActions} />}
     </div>
   );
 };
