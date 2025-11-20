@@ -91,6 +91,12 @@ export class PriceController {
     };
   }
 
+  @Get('missing-dates')
+  async getMissingDates() {
+    const result = await this.priceService.getMissingDates();
+    return result;
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     const price = await this.priceService.findOne(+id);

@@ -84,3 +84,5 @@ const LoadingSkeleton = ({ type = 'card', count = 1 }: LoadingSkeletonProps) => 
 
 export default LoadingSkeleton;
 
+
+

@@ -4,6 +4,7 @@ import { apiService } from '../services/api';
 import LoadingSkeleton from './LoadingSkeleton';
 import EmptyState from './EmptyState';
 import DataRefreshIndicator from './DataRefreshIndicator';
+import { showSuccessToast } from './ToastNotification';
 import './CurrentPricesPanel.css';
 
 type SortOption = 'name-asc' | 'name-desc' | 'price-asc' | 'price-desc' | 'date-asc' | 'date-desc';
@@ -143,6 +144,76 @@ const CurrentPricesPanel = ({ selectedProductId, startDate, endDate }: CurrentPr
     return { min: minPos, avg: avgPos, max: maxPos };
   };
 
+  const exportToExcel = () => {
+    if (!filteredAndSortedData || filteredAndSortedData.length === 0) {
+      showSuccessToast('No data to export');
+      return;
+    }
+
+    // Prepare CSV headers
+    const headers = [
+      'Product Name',
+      'Product Type',
+      'Product ID',
+      'Date',
+      'Min Price (Rs.)',
+      'Max Price (Rs.)',
+      'Average Price (Rs.)',
+      'Price Range (Rs.)',
+      'Price Spread (%)'
+    ];
+
+    // Prepare rows with all price data
+    const rows = filteredAndSortedData.map((price: any) => {
+      const minPrice = Number(price.minPrice);
+      const maxPrice = Number(price.maxPrice);
+      const avgPrice = (minPrice + maxPrice) / 2;
+      const priceRange = maxPrice - minPrice;
+      const priceSpread = maxPrice === minPrice ? 0 : ((priceRange / avgPrice) * 100);
+
+      return [
+        price.product?.name || 'N/A',
+        price.product?.type || 'N/A',
+        price.productId || 'N/A',
+        new Date(price.date).toLocaleDateString('en-US'),
+        minPrice.toFixed(2),
+        maxPrice.toFixed(2),
+        avgPrice.toFixed(2),
+        priceRange.toFixed(2),
+        priceSpread.toFixed(2)
+      ];
+    });
+
+    // Create CSV content
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.map(cell => {
+        // Escape commas and quotes in cell values
+        const cellStr = String(cell);
+        if (cellStr.includes(',') || cellStr.includes('"') || cellStr.includes('\n')) {
+          return `"${cellStr.replace(/"/g, '""')}"`;
+        }
+        return cellStr;
+      }).join(','))
+    ].join('\n');
+
+    // Add BOM for UTF-8 to help Excel open it correctly
+    const BOM = '\uFEFF';
+    const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    
+    // Generate filename with date and filter info
+    const dateStr = new Date().toISOString().split('T')[0];
+    const filterInfo = selectedProductId ? '-filtered' : '';
+    a.download = `current-prices-${dateStr}${filterInfo}.csv`;
+    
+    a.click();
+    window.URL.revokeObjectURL(url);
+    showSuccessToast(`Exported ${filteredAndSortedData.length} products to Excel`);
+  };
+
   return (
     <div className="current-prices-panel">
       <div className="current-prices-header">
@@ -205,6 +276,16 @@ const CurrentPricesPanel = ({ selectedProductId, startDate, endDate }: CurrentPr
             </span>
           )}
         </div>
+
+        <button 
+          className="export-excel-button"
+          onClick={exportToExcel}
+          disabled={!filteredAndSortedData || filteredAndSortedData.length === 0}
+          title="Export current prices to Excel"
+        >
+          <span className="export-icon">📥</span>
+          <span>Export Excel</span>
+        </button>
       </div>
 
       {/* Price Cards Grid */}

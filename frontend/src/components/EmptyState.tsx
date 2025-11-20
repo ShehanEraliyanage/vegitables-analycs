@@ -27,3 +27,5 @@ const EmptyState = ({ icon = '📊', title, message, action }: EmptyStateProps) 
 
 export default EmptyState;
 
+
+

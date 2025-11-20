@@ -28,6 +28,19 @@ const DailySyncButton = () => {
     },
   );
 
+  // Get missing dates
+  const { data: missingDatesData, refetch: refetchMissingDates, error: missingDatesError, isLoading: isLoadingMissingDates } = useQuery(
+    ['missingDates'],
+    () => apiService.getMissingDates(),
+    {
+      refetchInterval: 60000, // Check every minute
+      retry: 2, // Retry failed requests
+      onError: (error) => {
+        console.error('Failed to fetch missing dates:', error);
+      },
+    },
+  );
+
   const dailySyncMutation = useMutation(
     () => apiService.triggerDailySync(),
     {
@@ -95,7 +108,9 @@ const DailySyncButton = () => {
           queryClient.invalidateQueries('analytics');
           queryClient.invalidateQueries('today-prices');
           queryClient.invalidateQueries('latest-prices');
+          queryClient.invalidateQueries('missingDates');
           refetchDateCheck();
+          refetchMissingDates();
         }, 1000);
       },
       onError: (error: any) => {
@@ -118,9 +133,35 @@ const DailySyncButton = () => {
   );
 
   const handleDailySync = () => {
-    Swal.fire({
-      title: 'Sync Today\'s Data?',
-      html: `
+    const missingDates = missingDatesData?.missingDates || [];
+    const hasMissingDates = missingDates.length > 0;
+    
+    let title = 'Sync Data?';
+    let message = '';
+    
+    if (hasMissingDates) {
+      title = `Sync ${missingDates.length} Missing Date(s)?`;
+      message = `
+        <div style="text-align: left; padding: 1rem 0;">
+          <p style="margin-bottom: 1rem; color: #6b7280;">
+            ${missingDates.length === 1 
+              ? 'This will sync 1 missing date:' 
+              : `This will sync ${missingDates.length} missing dates:`}
+          </p>
+          <div style="background: #f3f4f6; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; max-height: 200px; overflow-y: auto;">
+            ${missingDates.map(date => `
+              <p style="margin: 0.25rem 0; color: #374151; font-family: monospace;">
+                • ${date}${date === today ? ' <strong>(Today)</strong>' : ''}
+              </p>
+            `).join('')}
+          </div>
+          <p style="margin-top: 1rem; color: #6b7280; font-size: 0.9rem;">
+            <strong>Estimated Time:</strong> ${missingDates.length * 1}-${missingDates.length * 2} minutes
+          </p>
+        </div>
+      `;
+    } else {
+      message = `
         <div style="text-align: left; padding: 1rem 0;">
           <p style="margin-bottom: 1rem; color: #6b7280;">
             This will fetch today's price data from the API.
@@ -134,7 +175,12 @@ const DailySyncButton = () => {
             </p>
           </div>
         </div>
-      `,
+      `;
+    }
+
+    Swal.fire({
+      title,
+      html: message,
       icon: 'question',
       showCancelButton: true,
       confirmButtonColor: '#667eea',
@@ -147,12 +193,13 @@ const DailySyncButton = () => {
       if (result.isConfirmed) {
         // Show loading dialog
         Swal.fire({
-          title: 'Syncing Today\'s Data...',
+          title: hasMissingDates ? `Syncing ${missingDates.length} Date(s)...` : 'Syncing Today\'s Data...',
           html: `
             <div style="text-align: center; padding: 1rem 0;">
               <p style="margin-top: 1rem; color: #6b7280;">
-                Fetching today's data from the API.<br/>
-                Please wait...
+                ${hasMissingDates 
+                  ? `Syncing ${missingDates.length} missing date(s) from the API.<br/>This may take a few minutes.`
+                  : 'Fetching today\'s data from the API.<br/>Please wait...'}
               </p>
             </div>
           `,
@@ -172,20 +219,48 @@ const DailySyncButton = () => {
 
   const isDataFetched = dateCheck?.exists || false;
   const isLoading = dailySyncMutation.isLoading;
+  const missingDates = missingDatesData?.missingDates || [];
+  const hasMissingDates = missingDates.length > 0;
+  const latestSyncedDate = missingDatesData?.latestSyncedDate;
+  
+  // Debug logging
+  if (missingDatesData) {
+    console.log('Missing dates data:', missingDatesData);
+  }
+  if (missingDatesError) {
+    console.error('Missing dates error:', missingDatesError);
+  }
 
   return (
     <div className="daily-sync-container">
       <div className="daily-sync-info">
         <div className="daily-sync-icon">
-          {isDataFetched ? '✅' : '🔄'}
+          {isDataFetched && !hasMissingDates ? '✅' : '🔄'}
         </div>
         <div className="daily-sync-content">
           <h4>Daily Data Sync</h4>
           <p className="daily-sync-date">Today: {today}</p>
+          {latestSyncedDate && (
+            <p className="daily-sync-date" style={{ fontSize: '0.85rem', color: '#6b7280', marginTop: '0.25rem' }}>
+              Last synced: {latestSyncedDate}
+            </p>
+          )}
           <p className="daily-sync-status">
-            {isDataFetched ? (
+            {isLoadingMissingDates ? (
+              <span className="status-pending">
+                🔄 Checking for missing dates...
+              </span>
+            ) : missingDatesError ? (
+              <span className="status-pending" style={{ color: '#ef4444' }}>
+                ⚠ Error checking missing dates
+              </span>
+            ) : isDataFetched && !hasMissingDates ? (
               <span className="status-success">
-                ✓ Data already fetched for today
+                ✓ All data up to date
+              </span>
+            ) : hasMissingDates ? (
+              <span className="status-pending">
+                ⚠ {missingDates.length} missing date(s) found
               </span>
             ) : (
               <span className="status-pending">
@@ -193,15 +268,33 @@ const DailySyncButton = () => {
               </span>
             )}
           </p>
+          {hasMissingDates && (
+            <div style={{ marginTop: '0.5rem', fontSize: '0.8rem', color: '#6b7280' }}>
+              <details style={{ cursor: 'pointer' }}>
+                <summary style={{ color: '#667eea', fontWeight: 500 }}>
+                  View missing dates ({missingDates.length})
+                </summary>
+                <div style={{ marginTop: '0.5rem', padding: '0.5rem', background: '#f3f4f6', borderRadius: '4px', maxHeight: '150px', overflowY: 'auto' }}>
+                  {missingDates.map((date, idx) => (
+                    <div key={idx} style={{ fontFamily: 'monospace', fontSize: '0.75rem', padding: '0.25rem 0' }}>
+                      {date}{date === today ? ' (Today)' : ''}
+                    </div>
+                  ))}
+                </div>
+              </details>
+            </div>
+          )}
         </div>
       </div>
       <button
-        className={`daily-sync-button ${isDataFetched ? 'disabled' : ''}`}
+        className={`daily-sync-button ${isDataFetched && !hasMissingDates ? 'disabled' : ''}`}
         onClick={handleDailySync}
-        disabled={isDataFetched || isLoading}
+        disabled={(isDataFetched && !hasMissingDates) || isLoading}
         title={
-          isDataFetched
-            ? 'Today\'s data has already been fetched'
+          hasMissingDates
+            ? `Click to sync ${missingDates.length} missing date(s)`
+            : isDataFetched
+            ? 'All data is up to date'
             : 'Click to fetch today\'s data'
         }
       >
@@ -210,10 +303,15 @@ const DailySyncButton = () => {
             <span className="spinner-small"></span>
             Syncing...
           </>
-        ) : isDataFetched ? (
+        ) : isDataFetched && !hasMissingDates ? (
           <>
             <span>✓</span>
-            Data Fetched
+            Up to Date
+          </>
+        ) : hasMissingDates ? (
+          <>
+            <span>🔄</span>
+            Sync {missingDates.length} Date{missingDates.length > 1 ? 's' : ''}
           </>
         ) : (
           <>

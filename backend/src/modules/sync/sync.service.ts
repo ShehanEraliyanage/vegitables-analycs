@@ -185,36 +185,107 @@ export class SyncService {
     const slTime = new Date(
       today.toLocaleString('en-US', { timeZone: 'Asia/Colombo' }),
     );
-    const dateStr = slTime.toISOString().split('T')[0];
+    const todayDateStr = slTime.toISOString().split('T')[0];
+    const todayDate = new Date(todayDateStr + 'T00:00:00');
 
-    this.logger.log(`Starting daily sync for ${dateStr}`);
+    this.logger.log(`Starting daily sync (checking for missed dates up to ${todayDateStr})`);
 
     try {
-      const result = await this.syncDate(slTime);
-      if (result.success) {
-        if (result.dataFound) {
-          return { 
-            success: true, 
-            message: `Daily sync completed for ${dateStr}. Synced ${result.count} price entries.`,
-            dataFound: true,
-            count: result.count
-          };
-        } else {
-          return { 
-            success: true, 
-            message: `No data available for ${dateStr}`,
-            dataFound: false,
-            count: 0
-          };
-        }
+      // Get the latest synced date from database
+      const latestSyncedDate = await this.priceService.getLatestSyncedDate();
+      
+      let startDate: Date;
+      if (latestSyncedDate) {
+        // Start from the day after the latest synced date
+        startDate = new Date(latestSyncedDate);
+        startDate.setDate(startDate.getDate() + 1);
+        // Reset time to start of day
+        startDate.setHours(0, 0, 0, 0);
       } else {
-        return { 
-          success: false, 
-          message: `Daily sync failed for ${dateStr}. Please try again later.`,
+        // If no data exists, sync only today
+        startDate = new Date(todayDate);
+        this.logger.log('No previous sync found, syncing only today');
+      }
+
+      // Ensure we don't sync future dates
+      const endDate = todayDate;
+      
+      // If startDate is after today, nothing to sync
+      if (startDate > endDate) {
+        this.logger.log(`No missed dates to sync. Latest synced date: ${latestSyncedDate ? latestSyncedDate.toISOString().split('T')[0] : 'none'}`);
+        return {
+          success: true,
+          message: `No missed dates to sync. Already up to date.`,
           dataFound: false,
           count: 0
         };
       }
+
+      // Sync all dates from startDate to today (inclusive)
+      let totalSynced = 0;
+      let totalDataFound = 0;
+      let failedDates: string[] = [];
+      const datesToSync: Date[] = [];
+
+      // Build list of dates to sync
+      const currentDate = new Date(startDate);
+      while (currentDate <= endDate) {
+        datesToSync.push(new Date(currentDate));
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+
+      this.logger.log(`Found ${datesToSync.length} date(s) to sync: ${datesToSync.map(d => d.toISOString().split('T')[0]).join(', ')}`);
+
+      // Sync each date
+      for (const dateToSync of datesToSync) {
+        const dateStr = dateToSync.toISOString().split('T')[0];
+        this.logger.log(`Syncing date: ${dateStr}`);
+        
+        const result = await this.syncDate(dateToSync);
+        
+        if (result.success) {
+          if (result.dataFound) {
+            totalSynced += result.count || 0;
+            totalDataFound++;
+            this.logger.log(`Successfully synced ${dateStr}: ${result.count} entries`);
+          } else {
+            this.logger.log(`No data available for ${dateStr}`);
+          }
+        } else {
+          failedDates.push(dateStr);
+          this.logger.warn(`Failed to sync ${dateStr}`);
+        }
+
+        // Small delay between dates to avoid overwhelming the API
+        if (datesToSync.indexOf(dateToSync) < datesToSync.length - 1) {
+          await new Promise((resolve) => setTimeout(resolve, 100));
+        }
+      }
+
+      // Build response message
+      let message = '';
+      if (datesToSync.length === 1 && datesToSync[0].toISOString().split('T')[0] === todayDateStr) {
+        // Only synced today
+        if (totalDataFound > 0) {
+          message = `Daily sync completed for ${todayDateStr}. Synced ${totalSynced} price entries.`;
+        } else {
+          message = `No data available for ${todayDateStr}`;
+        }
+      } else {
+        // Synced multiple dates (catch-up)
+        const syncedDates = datesToSync.length - failedDates.length;
+        message = `Sync completed. Processed ${datesToSync.length} date(s), synced ${syncedDates} date(s) with ${totalSynced} total entries.`;
+        if (failedDates.length > 0) {
+          message += ` Failed dates: ${failedDates.join(', ')}`;
+        }
+      }
+
+      return {
+        success: failedDates.length === 0,
+        message,
+        dataFound: totalDataFound > 0,
+        count: totalSynced
+      };
     } catch (error) {
       this.logger.error(`Daily sync failed: ${error.message}`);
       return {

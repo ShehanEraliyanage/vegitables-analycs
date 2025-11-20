@@ -111,6 +111,40 @@
   font-weight: 600;
 }
 
+.export-excel-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.export-excel-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+}
+
+.export-excel-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.export-excel-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.export-icon {
+  font-size: 1rem;
+}
+
 /* Grid Layout - 2 columns on desktop */
 .current-prices-grid {
   display: grid;
@@ -470,6 +504,11 @@
   .results-count {
     margin-left: 0;
     text-align: center;
+  }
+
+  .export-excel-button {
+    width: 100%;
+    justify-content: center;
   }
 
   .price-display {

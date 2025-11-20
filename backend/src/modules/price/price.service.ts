@@ -144,5 +144,67 @@ export class PriceService {
       order: { date: 'DESC' },
     });
   }
+
+  async getLatestSyncedDate(): Promise<Date | null> {
+    const latestPrices = await this.priceRepository.find({
+      order: { date: 'DESC' },
+      take: 1,
+    });
+    return latestPrices && latestPrices.length > 0 ? latestPrices[0].date : null;
+  }
+
+  async getMissingDates(): Promise<{ latestSyncedDate: string | null; missingDates: string[]; today: string }> {
+    const today = new Date();
+    const slTime = new Date(
+      today.toLocaleString('en-US', { timeZone: 'Asia/Colombo' }),
+    );
+    const todayDateStr = slTime.toISOString().split('T')[0];
+    const todayDate = new Date(todayDateStr + 'T00:00:00');
+
+    const latestSyncedDateRaw = await this.getLatestSyncedDate();
+    const missingDates: string[] = [];
+
+    if (!latestSyncedDateRaw) {
+      // No data exists, only today is missing
+      return {
+        latestSyncedDate: null,
+        missingDates: [todayDateStr],
+        today: todayDateStr,
+      };
+    }
+
+    // Ensure latestSyncedDate is a Date object
+    const latestSyncedDate = latestSyncedDateRaw instanceof Date 
+      ? latestSyncedDateRaw 
+      : new Date(latestSyncedDateRaw);
+    
+    // Convert to date string for return value
+    const latestSyncedDateStr = latestSyncedDate.toISOString().split('T')[0];
+
+    // Find missing dates from day after latest synced date to today
+    const startDate = new Date(latestSyncedDate);
+    startDate.setDate(startDate.getDate() + 1);
+    startDate.setHours(0, 0, 0, 0);
+
+    const currentDate = new Date(startDate);
+    while (currentDate <= todayDate) {
+      const dateStr = currentDate.toISOString().split('T')[0];
+      const dateObj = new Date(dateStr + 'T00:00:00');
+      
+      // Check if this date exists in the database
+      const exists = await this.checkDateExists(dateObj);
+      if (!exists) {
+        missingDates.push(dateStr);
+      }
+      
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    return {
+      latestSyncedDate: latestSyncedDateStr,
+      missingDates,
+      today: todayDateStr,
+    };
+  }
 }
 

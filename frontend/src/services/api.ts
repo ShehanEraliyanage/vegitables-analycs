@@ -164,6 +164,12 @@ export const apiService = {
     return response.data;
   },
 
+  // Get missing dates
+  getMissingDates: async (): Promise<{ latestSyncedDate: string | null; missingDates: string[]; today: string }> => {
+    const response = await api.get('/prices/missing-dates');
+    return response.data;
+  },
+
   // Advanced Analytics
   getPriceTrends: async (params?: {
     startDate?: string;
