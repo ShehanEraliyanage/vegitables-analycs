@@ -19,7 +19,7 @@
 }
 
 .breadcrumb-separator {
-  color: #9ca3af;
+  color: var(--text-tertiary);
   font-size: 1.2rem;
   font-weight: 300;
 }
@@ -27,7 +27,7 @@
 .breadcrumb-link {
   background: none;
   border: none;
-  color: #667eea;
+  color: var(--primary-color);
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
@@ -37,12 +37,12 @@
 }
 
 .breadcrumb-link:hover {
-  background: #f3f4f6;
-  color: #5568d3;
+  background: var(--bg-hover);
+  color: var(--primary-hover);
 }
 
 .breadcrumb-current {
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 0.875rem;
   font-weight: 600;
 }

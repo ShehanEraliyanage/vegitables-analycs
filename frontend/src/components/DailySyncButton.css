@@ -1,14 +1,14 @@
 .daily-sync-container {
-  background: white;
+  background: var(--bg-primary);
   padding: 1.5rem;
   border-radius: 12px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
   margin-bottom: 2rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1.5rem;
-  border: 2px solid #e5e7eb;
+  border: 1px solid var(--border-color);
   transition: all 0.3s ease;
 }
 
@@ -35,14 +35,14 @@
 
 .daily-sync-content h4 {
   margin: 0 0 0.5rem 0;
-  color: #1f2937;
+  color: var(--text-primary);
   font-size: 1.1rem;
   font-weight: 700;
 }
 
 .daily-sync-date {
   margin: 0.25rem 0;
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 0.9rem;
 }
 

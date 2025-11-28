@@ -18,11 +18,16 @@ import KeyboardShortcuts from '../components/KeyboardShortcuts';
 import SmartTooltip from '../components/SmartTooltip';
 import QuickActions from '../components/QuickActions';
 import Breadcrumbs from '../components/Breadcrumbs';
+import Sidebar from '../components/Sidebar';
+import ThemeToggle from '../components/ThemeToggle';
+import DashboardWidgets from '../components/DashboardWidgets';
+import FavoritesPanel from '../components/FavoritesPanel';
+import ExportButton from '../components/ExportButton';
 import { showSuccessToast } from '../components/ToastNotification';
 import './Dashboard.css';
 
 type TimePeriod = 'weekly' | 'monthly' | 'quarterly' | 'six-month' | 'annual';
-type AnalyticsTab = 'current' | 'overview' | 'trends' | 'performers' | 'comparison' | 'seasonal' | 'distribution' | 'period-comparison';
+type AnalyticsTab = 'current' | 'overview' | 'trends' | 'performers' | 'comparison' | 'seasonal' | 'distribution' | 'period-comparison' | 'favorites';
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState<AnalyticsTab>('current');
@@ -32,6 +37,8 @@ const Dashboard = () => {
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
   const [showKeyboardShortcuts, setShowKeyboardShortcuts] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const { data: products = [], isLoading: productsLoading } = useQuery<Product[]>(
     'products',
@@ -130,6 +137,7 @@ const Dashboard = () => {
     else if (key === '6') setActiveTab('seasonal');
     else if (key === '7') setActiveTab('distribution');
     else if (key === '8') setActiveTab('period-comparison');
+    else if (key === '9') setActiveTab('favorites');
   };
 
   // Handle tab change with smooth transition
@@ -201,28 +209,48 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="dashboard">
+    <div className={`dashboard ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
       <KeyboardShortcuts 
         onShortcut={handleShortcut} 
         isOpen={showKeyboardShortcuts}
         onToggle={setShowKeyboardShortcuts}
       />
       
+      <Sidebar 
+        activeTab={activeTab} 
+        onTabChange={handleTabChange}
+        isOpen={sidebarOpen}
+        onToggle={() => setSidebarOpen(!sidebarOpen)}
+        onCollapseChange={setSidebarCollapsed}
+      />
+      
       <header className="dashboard-header">
         <div className="header-content">
-          <div>
-            <h1>Vegetables & Fruits Price Analytics</h1>
-            <p>Sri Lanka Market Prices - Comprehensive Analytics Platform</p>
-          </div>
-          <SmartTooltip content="Click to see keyboard shortcuts">
+          <div className="header-left">
             <button 
-              className="help-button" 
-              onClick={() => setShowKeyboardShortcuts(true)}
-              aria-label="Keyboard shortcuts"
+              className="mobile-menu-button"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              aria-label="Toggle menu"
             >
-              <span>?</span>
+              <span>☰</span>
             </button>
-          </SmartTooltip>
+            <div>
+              <h1>Vegetables & Fruits Price Analytics</h1>
+              <p>Sri Lanka Market Prices - Comprehensive Analytics Platform</p>
+            </div>
+          </div>
+          <div className="header-actions">
+            <ThemeToggle />
+            <SmartTooltip content="Click to see keyboard shortcuts">
+              <button 
+                className="help-button" 
+                onClick={() => setShowKeyboardShortcuts(true)}
+                aria-label="Keyboard shortcuts"
+              >
+                <span>?</span>
+              </button>
+            </SmartTooltip>
+          </div>
         </div>
       </header>
 
@@ -232,6 +260,12 @@ const Dashboard = () => {
         {hasData && (
           <>
             <DailySyncButton />
+
+            <DashboardWidgets 
+              selectedProductId={selectedProductId}
+              startDate={startDate}
+              endDate={endDate}
+            />
 
             <FilterPanel
               products={products}
@@ -253,7 +287,8 @@ const Dashboard = () => {
               ]}
             />
 
-            <div className="analytics-tabs">
+            {/* Hide old tabs since we have sidebar now, but keep for mobile fallback */}
+            <div className="analytics-tabs mobile-only">
               <SmartTooltip content="Press 1 to switch (Current Prices)">
                 <button
                   className={`tab-button ${activeTab === 'current' ? 'active' : ''}`}
@@ -327,11 +362,13 @@ const Dashboard = () => {
                 </button>
               </SmartTooltip>
               {activeTab === 'overview' && (
-                <SmartTooltip content="Export current analytics data as CSV">
-                  <button className="export-button" onClick={exportToCSV}>
-                    📥 Export CSV
-                  </button>
-                </SmartTooltip>
+                <ExportButton
+                  data={analytics?.data}
+                  filename="analytics"
+                  startDate={startDate}
+                  endDate={endDate}
+                  productId={selectedProductId}
+                />
               )}
             </div>
 
@@ -405,6 +442,10 @@ const Dashboard = () => {
                 <PeriodComparisonPanel
                   selectedProductId={selectedProductId}
                 />
+              )}
+
+              {activeTab === 'favorites' && (
+                <FavoritesPanel />
               )}
             </div>
           </>
