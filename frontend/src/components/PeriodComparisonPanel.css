@@ -139,6 +139,56 @@
   color: #6b7280;
 }
 
+.trend-controls {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 24px;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.trend-filter-group,
+.trend-sort-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  white-space: nowrap;
+}
+
+.trend-filter-select,
+.trend-sort-select {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: white;
+  font-size: 14px;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 180px;
+}
+
+.trend-filter-select:hover,
+.trend-sort-select:hover {
+  border-color: #3b82f6;
+}
+
+.trend-filter-select:focus,
+.trend-sort-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
 .export-section {
   margin-bottom: 24px;
   display: flex;
@@ -301,6 +351,23 @@
   .comparison-summary {
     flex-direction: column;
     gap: 16px;
+  }
+
+  .trend-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .trend-filter-group,
+  .trend-sort-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .trend-filter-select,
+  .trend-sort-select {
+    width: 100%;
+    min-width: auto;
   }
 
   .comparison-table {

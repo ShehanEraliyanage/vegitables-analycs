@@ -11,8 +11,13 @@ interface PeriodComparisonPanelProps {
   selectedProductId?: number;
 }
 
+type TrendFilter = 'all' | 'increasing' | 'decreasing' | 'stable' | 'new';
+type TrendSort = 'default' | 'increasing-first' | 'decreasing-first';
+
 const PeriodComparisonPanel = ({ selectedProductId }: PeriodComparisonPanelProps) => {
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>('day');
+  const [trendFilter, setTrendFilter] = useState<TrendFilter>('all');
+  const [trendSort, setTrendSort] = useState<TrendSort>('default');
 
   const { data, isLoading, error } = useQuery(
     ['period-comparison', selectedPeriod, selectedProductId],
@@ -26,15 +31,55 @@ const PeriodComparisonPanel = ({ selectedProductId }: PeriodComparisonPanelProps
     },
   );
 
+  // Filter and sort comparisons based on trend
+  const getFilteredAndSortedComparisons = () => {
+    if (!data || !data.comparisons) return [];
+
+    let filtered = [...data.comparisons];
+
+    // Apply trend filter
+    if (trendFilter !== 'all') {
+      filtered = filtered.filter((comp: any) => comp.trend === trendFilter);
+    }
+
+    // Apply trend sort
+    if (trendSort === 'increasing-first') {
+      filtered.sort((a: any, b: any) => {
+        const trendOrder: { [key: string]: number } = {
+          increasing: 1,
+          decreasing: 2,
+          stable: 3,
+          new: 4,
+        };
+        return (trendOrder[a.trend] || 99) - (trendOrder[b.trend] || 99);
+      });
+    } else if (trendSort === 'decreasing-first') {
+      filtered.sort((a: any, b: any) => {
+        const trendOrder: { [key: string]: number } = {
+          decreasing: 1,
+          increasing: 2,
+          stable: 3,
+          new: 4,
+        };
+        return (trendOrder[a.trend] || 99) - (trendOrder[b.trend] || 99);
+      });
+    }
+    // 'default' keeps the original sort (by absolute price change percentage)
+
+    return filtered;
+  };
+
   const exportToExcel = () => {
-    if (!data || !data.comparisons || data.comparisons.length === 0) {
+    const comparisonsToExport = getFilteredAndSortedComparisons();
+    
+    if (!data || !comparisonsToExport || comparisonsToExport.length === 0) {
       showErrorToast('No data available to export');
       return;
     }
 
     try {
       // Prepare data for Excel
-      const excelData = data.comparisons.map((comp: any) => ({
+      const excelData = comparisonsToExport.map((comp: any) => ({
         'Product Name': comp.productName,
         'Product Type': comp.productType,
         'Previous Period Avg Price (Rs.)': comp.hasPreviousData ? comp.previousAvgPrice : 'N/A',
@@ -142,6 +187,8 @@ const PeriodComparisonPanel = ({ selectedProductId }: PeriodComparisonPanelProps
     { value: 'year', label: 'Year' },
   ];
 
+  const filteredComparisons = getFilteredAndSortedComparisons();
+
   if (isLoading) {
     return (
       <div className="period-comparison-panel">
@@ -220,13 +267,49 @@ const PeriodComparisonPanel = ({ selectedProductId }: PeriodComparisonPanelProps
             </div>
           )}
 
+          <div className="trend-controls">
+            <div className="trend-filter-group">
+              <label htmlFor="trend-filter" className="filter-label">
+                Filter by Trend:
+              </label>
+              <select
+                id="trend-filter"
+                className="trend-filter-select"
+                value={trendFilter}
+                onChange={(e) => setTrendFilter(e.target.value as TrendFilter)}
+              >
+                <option value="all">All Trends</option>
+                <option value="increasing">↑ Increasing</option>
+                <option value="decreasing">↓ Decreasing</option>
+                <option value="stable">→ Stable</option>
+                <option value="new">🆕 New</option>
+              </select>
+            </div>
+
+            <div className="trend-sort-group">
+              <label htmlFor="trend-sort" className="filter-label">
+                Sort by Trend:
+              </label>
+              <select
+                id="trend-sort"
+                className="trend-sort-select"
+                value={trendSort}
+                onChange={(e) => setTrendSort(e.target.value as TrendSort)}
+              >
+                <option value="default">Default (by change %)</option>
+                <option value="increasing-first">Increasing First</option>
+                <option value="decreasing-first">Decreasing First</option>
+              </select>
+            </div>
+          </div>
+
           <div className="export-section">
             <button className="export-excel-button" onClick={exportToExcel}>
               📊 Export to Excel
             </button>
           </div>
 
-          {data.comparisons && data.comparisons.length > 0 ? (
+          {filteredComparisons && filteredComparisons.length > 0 ? (
             <div className="comparison-table-container">
               <table className="comparison-table">
                 <thead>
@@ -241,7 +324,7 @@ const PeriodComparisonPanel = ({ selectedProductId }: PeriodComparisonPanelProps
                   </tr>
                 </thead>
                 <tbody>
-                  {data.comparisons.map((comp: any, index: number) => (
+                  {filteredComparisons.map((comp: any, index: number) => (
                     <tr key={`${comp.productId}-${index}`}>
                       <td className="product-name">{comp.productName}</td>
                       <td className="product-type">{comp.productType}</td>
@@ -266,7 +349,9 @@ const PeriodComparisonPanel = ({ selectedProductId }: PeriodComparisonPanelProps
             </div>
           ) : (
             <div className="no-data">
-              No comparison data available for the selected period.
+              {data.comparisons && data.comparisons.length > 0
+                ? 'No products match the selected trend filter.'
+                : 'No comparison data available for the selected period.'}
             </div>
           )}
         </>
