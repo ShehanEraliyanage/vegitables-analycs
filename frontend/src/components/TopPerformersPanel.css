@@ -1,20 +1,22 @@
 .top-performers-panel {
-  background: white;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 24px;
   margin-bottom: 24px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .top-performers-panel h2 {
   margin: 0 0 16px 0;
-  color: #333;
+  color: var(--text-primary);
   font-size: 24px;
 }
 
 .performers-summary {
   margin-bottom: 24px;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .performers-container {
@@ -24,7 +26,7 @@
 }
 
 .performers-section {
-  background: #f9f9f9;
+  background: var(--bg-secondary);
   border-radius: 8px;
   padding: 16px;
 }
@@ -47,14 +49,15 @@
 }
 
 .performer-card {
-  background: white;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   padding: 12px;
   margin-bottom: 8px;
   display: flex;
   align-items: center;
   gap: 12px;
-  border-left: 3px solid #ccc;
+  border-left: 3px solid var(--border-color);
 }
 
 .performer-card.best {
@@ -68,7 +71,7 @@
 .performer-rank {
   font-weight: bold;
   font-size: 18px;
-  color: #666;
+  color: var(--text-secondary);
   min-width: 30px;
 }
 
@@ -78,13 +81,13 @@
 
 .performer-name {
   font-weight: 600;
-  color: #333;
+  color: var(--text-primary);
   margin-bottom: 4px;
 }
 
 .performer-type {
   font-size: 12px;
-  color: #666;
+  color: var(--text-secondary);
   text-transform: capitalize;
 }
 
@@ -102,12 +105,12 @@
 }
 
 .performer-stat .label {
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .performer-stat .value {
   font-weight: 600;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .performer-stat .value.positive {
@@ -126,7 +129,7 @@
 .no-data {
   text-align: center;
   padding: 40px;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 @media (max-width: 1024px) {

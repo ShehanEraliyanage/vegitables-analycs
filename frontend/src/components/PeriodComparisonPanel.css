@@ -1,9 +1,11 @@
 .period-comparison-panel {
-  background: white;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 24px;
   margin-bottom: 24px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .panel-header {
@@ -12,12 +14,12 @@
 
 .panel-header h2 {
   margin: 0 0 8px 0;
-  color: #333;
+  color: var(--text-primary);
   font-size: 24px;
 }
 
 .panel-description {
-  color: #666;
+  color: var(--text-secondary);
   margin: 0;
   font-size: 14px;
 }
@@ -31,8 +33,8 @@
 
 .period-button {
   padding: 10px 20px;
-  background: #f3f4f6;
-  color: #374151;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
   border: 2px solid transparent;
   border-radius: 6px;
   font-size: 14px;
@@ -42,13 +44,13 @@
 }
 
 .period-button:hover {
-  background: #e5e7eb;
+  background: var(--bg-hover);
 }
 
 .period-button.active {
-  background: #3b82f6;
+  background: var(--primary-color);
   color: white;
-  border-color: #2563eb;
+  border-color: var(--primary-hover);
 }
 
 .period-info {
@@ -58,7 +60,7 @@
   gap: 24px;
   margin-bottom: 24px;
   padding: 20px;
-  background: #f9fafb;
+  background: var(--bg-secondary);
   border-radius: 8px;
 }
 
@@ -66,9 +68,10 @@
   flex: 1;
   text-align: center;
   padding: 16px;
-  background: white;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
 }
 
 .period-box.previous {
@@ -82,19 +85,19 @@
 .period-label {
   font-size: 18px;
   font-weight: 600;
-  color: #333;
+  color: var(--text-primary);
   margin-bottom: 8px;
 }
 
 .period-dates {
   font-size: 14px;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .vs-divider {
   font-size: 20px;
   font-weight: 700;
-  color: #6b7280;
+  color: var(--text-secondary);
   padding: 0 16px;
 }
 
@@ -103,7 +106,8 @@
   gap: 24px;
   margin-bottom: 24px;
   padding: 16px;
-  background: #f9fafb;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   flex-wrap: wrap;
 }
@@ -116,7 +120,7 @@
 
 .summary-label {
   font-size: 12px;
-  color: #666;
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -124,7 +128,7 @@
 .summary-value {
   font-size: 20px;
   font-weight: 700;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .summary-item.increased .summary-value {
@@ -136,7 +140,7 @@
 }
 
 .summary-item.stable .summary-value {
-  color: #6b7280;
+  color: var(--text-secondary);
 }
 
 .trend-controls {
@@ -144,7 +148,8 @@
   gap: 24px;
   margin-bottom: 24px;
   padding: 16px;
-  background: #f9fafb;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   flex-wrap: wrap;
   align-items: center;
@@ -160,18 +165,18 @@
 .filter-label {
   font-size: 14px;
   font-weight: 500;
-  color: #374151;
+  color: var(--text-primary);
   white-space: nowrap;
 }
 
 .trend-filter-select,
 .trend-sort-select {
   padding: 8px 12px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
-  background: white;
+  background: var(--bg-primary);
   font-size: 14px;
-  color: #374151;
+  color: var(--text-primary);
   cursor: pointer;
   transition: all 0.2s;
   min-width: 180px;
@@ -226,47 +231,47 @@
 }
 
 .comparison-table thead {
-  background: #f9fafb;
+  background: var(--bg-secondary);
 }
 
 .comparison-table th {
   padding: 12px;
   text-align: left;
   font-weight: 600;
-  color: #374151;
-  border-bottom: 2px solid #e5e7eb;
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--border-color);
   position: sticky;
   top: 0;
-  background: #f9fafb;
+  background: var(--bg-secondary);
 }
 
 .comparison-table td {
   padding: 12px;
-  border-bottom: 1px solid #e5e7eb;
-  color: #666;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-secondary);
 }
 
 .comparison-table tbody tr:hover {
-  background: #f9fafb;
+  background: var(--bg-hover);
 }
 
 .product-name {
   font-weight: 500;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .product-type {
   text-transform: capitalize;
-  color: #6b7280;
+  color: var(--text-secondary);
 }
 
 .previous-price {
-  color: #6b7280;
+  color: var(--text-secondary);
 }
 
 .current-price {
   font-weight: 600;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .price-change {
@@ -313,7 +318,7 @@
 }
 
 .trend-icon.stable {
-  color: #6b7280;
+  color: var(--text-secondary);
 }
 
 .trend-icon.new {
@@ -323,7 +328,7 @@
 .trend-text {
   text-transform: capitalize;
   font-size: 12px;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .loading,
@@ -331,7 +336,7 @@
 .no-data {
   text-align: center;
   padding: 40px;
-  color: #666;
+  color: var(--text-secondary);
   font-style: italic;
 }
 

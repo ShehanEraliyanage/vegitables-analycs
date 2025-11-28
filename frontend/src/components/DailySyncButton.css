@@ -95,7 +95,7 @@
 .daily-sync-button.disabled,
 .daily-sync-button:disabled {
   background: #e5e7eb;
-  color: #9ca3af;
+  color: var(--text-tertiary);
   cursor: not-allowed;
   transform: none;
   box-shadow: none;

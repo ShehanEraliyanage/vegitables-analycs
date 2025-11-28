@@ -21,7 +21,7 @@
 
 .current-prices-panel h2 {
   margin: 0 0 0.5rem 0;
-  color: #111827;
+  color: var(--text-primary);
   font-size: 1.75rem;
   font-weight: 700;
   letter-spacing: -0.025em;
@@ -29,7 +29,7 @@
 
 .current-prices-subtitle {
   margin: 0;
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 0.95rem;
   font-weight: 500;
 }
@@ -104,7 +104,7 @@
 .results-count {
   margin-left: auto;
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
@@ -242,7 +242,7 @@
 
 .price-date {
   font-size: 0.75rem;
-  color: #9ca3af;
+  color: var(--text-tertiary);
   font-weight: 500;
   white-space: nowrap;
   margin-left: 1rem;
@@ -332,7 +332,7 @@
 .range-label {
   font-size: 0.75rem;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -340,7 +340,7 @@
 .range-value {
   font-size: 0.875rem;
   font-weight: 700;
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .range-bar-container {
@@ -385,7 +385,7 @@
   position: absolute;
   width: 3px;
   height: 100%;
-  background: white;
+  background: var(--bg-primary);
   box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
   transform: translateX(-50%);
 }
@@ -409,7 +409,7 @@
   display: flex;
   justify-content: space-between;
   font-size: 0.75rem;
-  color: #6b7280;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
@@ -449,12 +449,12 @@
 }
 
 .detail-label {
-  color: #6b7280;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
 .detail-value {
-  color: #111827;
+  color: var(--text-primary);
   font-weight: 600;
 }
 
@@ -462,7 +462,7 @@
 .no-results {
   text-align: center;
   padding: 3rem 2rem;
-  color: #6b7280;
+  color: var(--text-secondary);
 }
 
 .no-results p {

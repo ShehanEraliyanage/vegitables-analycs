@@ -23,6 +23,7 @@ import ThemeToggle from '../components/ThemeToggle';
 import DashboardWidgets from '../components/DashboardWidgets';
 import FavoritesPanel from '../components/FavoritesPanel';
 import ExportButton from '../components/ExportButton';
+import MetaTags from '../components/MetaTags';
 import { showSuccessToast } from '../components/ToastNotification';
 import './Dashboard.css';
 
@@ -208,8 +209,43 @@ const Dashboard = () => {
     },
   ];
 
+  // Update page title based on active tab
+  const getPageTitle = () => {
+    const tabNames: { [key: string]: string } = {
+      'current': 'Current Prices',
+      'overview': 'Overview & Statistics',
+      'trends': 'Price Trends',
+      'performers': 'Top Performers',
+      'comparison': 'Product Comparison',
+      'seasonal': 'Seasonal Analysis',
+      'distribution': 'Price Distribution',
+      'period-comparison': 'Period Comparison',
+      'favorites': 'Favorites',
+    };
+    return tabNames[activeTab] || 'Dashboard';
+  };
+
+  const getPageDescription = () => {
+    const descriptions: { [key: string]: string } = {
+      'current': 'View current market prices for vegetables and fruits in Sri Lanka',
+      'overview': 'Comprehensive statistics and analytics overview',
+      'trends': 'Analyze price trends and patterns over time',
+      'performers': 'Top performing products with highest price changes',
+      'comparison': 'Compare prices across multiple products',
+      'seasonal': 'Seasonal price patterns and analysis',
+      'distribution': 'Price distribution and statistical analysis',
+      'period-comparison': 'Compare prices between different time periods',
+      'favorites': 'Your favorite products and tracked items',
+    };
+    return descriptions[activeTab] || 'Vegetables & Fruits Price Analytics Platform';
+  };
+
   return (
     <div className={`dashboard ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+      <MetaTags 
+        title={getPageTitle()}
+        description={getPageDescription()}
+      />
       <KeyboardShortcuts 
         onShortcut={handleShortcut} 
         isOpen={showKeyboardShortcuts}
@@ -234,22 +270,22 @@ const Dashboard = () => {
             >
               <span>☰</span>
             </button>
-            <div>
-              <h1>Vegetables & Fruits Price Analytics</h1>
-              <p>Sri Lanka Market Prices - Comprehensive Analytics Platform</p>
-            </div>
+          <div>
+            <h1>Vegetables & Fruits Price Analytics</h1>
+            <p>Sri Lanka Market Prices - Comprehensive Analytics Platform</p>
+          </div>
           </div>
           <div className="header-actions">
             <ThemeToggle />
-            <SmartTooltip content="Click to see keyboard shortcuts">
-              <button 
-                className="help-button" 
-                onClick={() => setShowKeyboardShortcuts(true)}
-                aria-label="Keyboard shortcuts"
-              >
-                <span>?</span>
-              </button>
-            </SmartTooltip>
+          <SmartTooltip content="Click to see keyboard shortcuts">
+            <button 
+              className="help-button" 
+              onClick={() => setShowKeyboardShortcuts(true)}
+              aria-label="Keyboard shortcuts"
+            >
+              <span>?</span>
+            </button>
+          </SmartTooltip>
           </div>
         </div>
       </header>

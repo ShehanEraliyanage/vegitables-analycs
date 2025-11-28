@@ -1,9 +1,11 @@
 .trends-panel {
-  background: white;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 2rem;
   margin-bottom: 24px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-sm);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .trends-header {
@@ -12,21 +14,21 @@
   align-items: flex-start;
   margin-bottom: 2rem;
   padding-bottom: 1.5rem;
-  border-bottom: 2px solid #f3f4f6;
+  border-bottom: 2px solid var(--border-color);
   flex-wrap: wrap;
   gap: 1rem;
 }
 
 .trends-panel h2 {
   margin: 0 0 0.5rem 0;
-  color: #1f2937;
+  color: var(--text-primary);
   font-size: 1.75rem;
   font-weight: 700;
 }
 
 .trends-subtitle {
   margin: 0;
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 0.95rem;
   font-weight: 500;
 }
@@ -76,7 +78,7 @@
   gap: 2rem;
   margin-bottom: 2rem;
   padding: 1rem;
-  background: #f9fafb;
+  background: var(--bg-secondary);
   border-radius: 8px;
   flex-wrap: wrap;
 }
@@ -85,7 +87,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 0.9rem;
   font-weight: 500;
 }
@@ -101,15 +103,16 @@
 }
 
 .trend-card {
-  background: #f9f9f9;
+  background: var(--bg-secondary);
   border-radius: 12px;
   padding: 16px;
-  border-left: 4px solid #ccc;
+  border-left: 4px solid var(--border-color);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .trend-card.enhanced {
-  background: white;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border: 1px solid #e5e7eb;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   padding: 1.5rem;
@@ -169,7 +172,7 @@
 .trend-header h3 {
   margin: 0 0 0.5rem 0;
   font-size: 1.1rem;
-  color: #1f2937;
+  color: var(--text-primary);
   font-weight: 600;
   word-break: break-word;
 }
@@ -196,7 +199,7 @@
 
 .trend-badge.stable {
   background: #f3f4f6;
-  color: #374151;
+  color: var(--text-primary);
 }
 
 .trend-details {
@@ -225,7 +228,7 @@
 
 .trend-stat .label {
   font-size: 0.75rem;
-  color: #6b7280;
+  color: var(--text-secondary);
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -234,7 +237,7 @@
 .trend-stat .value {
   font-size: 1rem;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 .trend-stat .value.positive {
@@ -268,7 +271,7 @@
 
 .chart-title-section h3 {
   margin: 0;
-  color: #1f2937;
+  color: var(--text-primary);
   font-size: 1.3rem;
   font-weight: 600;
 }
@@ -281,17 +284,17 @@
 
 .info-item {
   padding: 0.5rem 1rem;
-  background: white;
+  background: var(--bg-primary);
   border-radius: 6px;
   font-size: 0.85rem;
-  color: #6b7280;
-  border: 1px solid #e5e7eb;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
   font-weight: 500;
 }
 
 .custom-tooltip {
-  background: white;
-  border: 1px solid #e5e7eb;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 1rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -299,7 +302,7 @@
 
 .tooltip-label {
   font-weight: 700;
-  color: #1f2937;
+  color: var(--text-primary);
   margin: 0 0 0.5rem 0;
   font-size: 0.9rem;
   border-bottom: 1px solid #e5e7eb;
@@ -337,7 +340,7 @@
 }
 
 .loading {
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 1.1rem;
   font-weight: 500;
 }
@@ -345,7 +348,7 @@
 .no-data {
   text-align: center;
   padding: 4rem 2rem;
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 1.1rem;
 }
 

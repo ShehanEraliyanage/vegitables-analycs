@@ -1,14 +1,16 @@
 .distribution-panel {
-  background: white;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 24px;
   margin-bottom: 24px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .distribution-panel h2 {
   margin: 0 0 16px 0;
-  color: #333;
+  color: var(--text-primary);
   font-size: 24px;
 }
 
@@ -30,17 +32,17 @@
 
 .summary-stat .label {
   font-size: 12px;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .summary-stat .value {
   font-size: 18px;
   font-weight: 600;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .distribution-summary p {
-  color: #666;
+  color: var(--text-secondary);
   margin: 0;
 }
 
@@ -50,7 +52,7 @@
 
 .distribution-chart h3 {
   margin: 0 0 16px 0;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .distribution-table {
@@ -59,7 +61,7 @@
 
 .distribution-table h3 {
   margin: 0 0 16px 0;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .distribution-table table {
@@ -75,23 +77,23 @@
 }
 
 .distribution-table th {
-  background: #f9fafb;
+  background: var(--bg-secondary);
   font-weight: 600;
-  color: #374151;
+  color: var(--text-primary);
 }
 
 .distribution-table td {
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .distribution-table tr:hover {
-  background: #f9fafb;
+  background: var(--bg-hover);
 }
 
 .loading,
 .no-data {
   text-align: center;
   padding: 40px;
-  color: #666;
+  color: var(--text-secondary);
 }
 

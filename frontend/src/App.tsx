@@ -8,10 +8,10 @@ function App() {
   return (
     <ThemeProvider>
       <FavoritesProvider>
-        <div className="App">
-          <ToastNotification />
-          <Dashboard />
-        </div>
+    <div className="App">
+      <ToastNotification />
+      <Dashboard />
+    </div>
       </FavoritesProvider>
     </ThemeProvider>
   )

@@ -1,9 +1,11 @@
 .seasonal-panel {
-  background: white;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 24px;
   margin-bottom: 24px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .seasonal-header {
@@ -15,22 +17,23 @@
 
 .seasonal-header h2 {
   margin: 0;
-  color: #333;
+  color: var(--text-primary);
   font-size: 24px;
 }
 
 .year-selector {
   padding: 8px 12px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   font-size: 14px;
-  background: white;
+  background: var(--bg-primary);
+  color: var(--text-primary);
   cursor: pointer;
 }
 
 .seasonal-summary {
   margin-bottom: 24px;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .seasonal-chart {
@@ -39,12 +42,12 @@
 
 .seasonal-chart h3 {
   margin: 0 0 16px 0;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .seasonal-table h3 {
   margin: 0 0 16px 0;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .table-container {
@@ -64,23 +67,23 @@
 }
 
 .seasonal-table th {
-  background: #f9fafb;
+  background: var(--bg-secondary);
   font-weight: 600;
-  color: #374151;
+  color: var(--text-primary);
 }
 
 .seasonal-table td {
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .seasonal-table tr:hover {
-  background: #f9fafb;
+  background: var(--bg-hover);
 }
 
 .loading,
 .no-data {
   text-align: center;
   padding: 40px;
-  color: #666;
+  color: var(--text-secondary);
 }
 

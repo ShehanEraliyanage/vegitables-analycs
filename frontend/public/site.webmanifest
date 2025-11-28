@@ -1,0 +1,48 @@
+{
+  "name": "Vegetables & Fruits Price Analytics - Sri Lanka",
+  "short_name": "Veg Analytics",
+  "description": "Comprehensive analytics platform for tracking and analyzing vegetable and fruit prices in Sri Lanka",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a1a1a",
+  "theme_color": "#667eea",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["business", "finance", "productivity"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Current Prices",
+      "short_name": "Prices",
+      "description": "View current market prices",
+      "url": "/?tab=current",
+      "icons": [{ "src": "/favicon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Price Trends",
+      "short_name": "Trends",
+      "description": "Analyze price trends",
+      "url": "/?tab=trends",
+      "icons": [{ "src": "/favicon-192x192.png", "sizes": "192x192" }]
+    }
+  ]
+}
+

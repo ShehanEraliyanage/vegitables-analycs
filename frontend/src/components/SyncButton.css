@@ -1,11 +1,12 @@
 .sync-button-container {
-  background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
+  background: var(--bg-primary);
   padding: 3rem 2rem;
   border-radius: 16px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-sm);
   margin-bottom: 2rem;
   text-align: center;
-  border: 2px solid #e0e7ff;
+  border: 1px solid var(--border-color);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .sync-icon {
@@ -24,14 +25,14 @@
 }
 
 .sync-info h3 {
-  color: #1f2937;
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
   font-size: 1.75rem;
   font-weight: 700;
 }
 
 .sync-info p {
-  color: #6b7280;
+  color: var(--text-secondary);
   margin-bottom: 2rem;
   font-size: 1.1rem;
 }
@@ -52,9 +53,10 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem;
-  background: white;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
@@ -69,7 +71,7 @@
 }
 
 .feature-item span:last-child {
-  color: #374151;
+  color: var(--text-primary);
   font-size: 0.95rem;
   font-weight: 500;
 }

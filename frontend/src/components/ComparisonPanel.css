@@ -1,19 +1,21 @@
 .comparison-panel {
-  background: white;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 24px;
   margin-bottom: 24px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .comparison-panel h2 {
   margin: 0 0 8px 0;
-  color: #333;
+  color: var(--text-primary);
   font-size: 24px;
 }
 
 .comparison-description {
-  color: #666;
+  color: var(--text-secondary);
   margin-bottom: 16px;
 }
 
@@ -23,7 +25,7 @@
   gap: 12px;
   margin-bottom: 16px;
   padding: 16px;
-  background: #f9f9f9;
+  background: var(--bg-secondary);
   border-radius: 6px;
   max-height: 200px;
   overflow-y: auto;
@@ -34,14 +36,14 @@
   align-items: center;
   gap: 6px;
   padding: 8px 12px;
-  background: white;
+  background: var(--bg-primary);
   border-radius: 4px;
   cursor: pointer;
   transition: background 0.2s;
 }
 
 .product-checkbox:hover {
-  background: #f0f0f0;
+  background: var(--bg-hover);
 }
 
 .product-checkbox input[type="checkbox"] {
@@ -72,7 +74,7 @@
 
 .comparison-summary {
   margin-bottom: 16px;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .comparison-table {
@@ -93,17 +95,17 @@
 }
 
 .comparison-table th {
-  background: #f9fafb;
+  background: var(--bg-secondary);
   font-weight: 600;
-  color: #374151;
+  color: var(--text-primary);
 }
 
 .comparison-table td {
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .comparison-table tr:hover {
-  background: #f9fafb;
+  background: var(--bg-hover);
 }
 
 .type-cell {
@@ -126,19 +128,19 @@
 
 .comparison-chart h3 {
   margin: 0 0 16px 0;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .no-selection {
   text-align: center;
   padding: 40px;
-  color: #666;
+  color: var(--text-secondary);
   font-style: italic;
 }
 
 .loading {
   text-align: center;
   padding: 40px;
-  color: #666;
+  color: var(--text-secondary);
 }
 
