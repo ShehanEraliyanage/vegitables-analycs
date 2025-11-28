@@ -132,5 +132,16 @@ export class AnalyticsController {
     const product = productId ? +productId : undefined;
     return this.analyticsService.getPriceDistribution(start, end, product);
   }
+
+  @Get('period-comparison')
+  async getPeriodComparison(
+    @Query('period') period: string,
+    @Query('productId') productId?: string,
+    @Query('productType') productType?: string,
+  ) {
+    const periodType = period as 'day' | 'week' | 'month' | 'three-month' | 'six-month' | 'year';
+    const product = productId ? +productId : undefined;
+    return this.analyticsService.getPeriodComparison(periodType, product, productType);
+  }
 }
 

@@ -10,6 +10,7 @@ import ComparisonPanel from '../components/ComparisonPanel';
 import SeasonalPanel from '../components/SeasonalPanel';
 import DistributionPanel from '../components/DistributionPanel';
 import CurrentPricesPanel from '../components/CurrentPricesPanel';
+import PeriodComparisonPanel from '../components/PeriodComparisonPanel';
 import LastPriceCard from '../components/LastPriceCard';
 import SyncButton from '../components/SyncButton';
 import DailySyncButton from '../components/DailySyncButton';
@@ -21,7 +22,7 @@ import { showSuccessToast } from '../components/ToastNotification';
 import './Dashboard.css';
 
 type TimePeriod = 'weekly' | 'monthly' | 'quarterly' | 'six-month' | 'annual';
-type AnalyticsTab = 'current' | 'overview' | 'trends' | 'performers' | 'comparison' | 'seasonal' | 'distribution';
+type AnalyticsTab = 'current' | 'overview' | 'trends' | 'performers' | 'comparison' | 'seasonal' | 'distribution' | 'period-comparison';
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState<AnalyticsTab>('current');
@@ -128,6 +129,7 @@ const Dashboard = () => {
     else if (key === '5') setActiveTab('comparison');
     else if (key === '6') setActiveTab('seasonal');
     else if (key === '7') setActiveTab('distribution');
+    else if (key === '8') setActiveTab('period-comparison');
   };
 
   // Handle tab change with smooth transition
@@ -315,6 +317,15 @@ const Dashboard = () => {
                   Price Distribution
                 </button>
               </SmartTooltip>
+              <SmartTooltip content="Press 8 to switch (Period Comparison)">
+                <button
+                  className={`tab-button ${activeTab === 'period-comparison' ? 'active' : ''}`}
+                  onClick={() => handleTabChange('period-comparison')}
+                  aria-label="Period Comparison"
+                >
+                  📊 Period Comparison
+                </button>
+              </SmartTooltip>
               {activeTab === 'overview' && (
                 <SmartTooltip content="Export current analytics data as CSV">
                   <button className="export-button" onClick={exportToCSV}>
@@ -387,6 +398,12 @@ const Dashboard = () => {
                   startDate={startDate}
                   endDate={endDate}
                   productId={selectedProductId}
+                />
+              )}
+
+              {activeTab === 'period-comparison' && (
+                <PeriodComparisonPanel
+                  selectedProductId={selectedProductId}
                 />
               )}
             </div>

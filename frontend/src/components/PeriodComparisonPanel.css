@@ -1,0 +1,315 @@
+.period-comparison-panel {
+  background: white;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.panel-header {
+  margin-bottom: 24px;
+}
+
+.panel-header h2 {
+  margin: 0 0 8px 0;
+  color: #333;
+  font-size: 24px;
+}
+
+.panel-description {
+  color: #666;
+  margin: 0;
+  font-size: 14px;
+}
+
+.period-selector {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.period-button {
+  padding: 10px 20px;
+  background: #f3f4f6;
+  color: #374151;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.period-button:hover {
+  background: #e5e7eb;
+}
+
+.period-button.active {
+  background: #3b82f6;
+  color: white;
+  border-color: #2563eb;
+}
+
+.period-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 24px;
+  padding: 20px;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.period-box {
+  flex: 1;
+  text-align: center;
+  padding: 16px;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.period-box.previous {
+  border-left: 4px solid #6b7280;
+}
+
+.period-box.current {
+  border-left: 4px solid #3b82f6;
+}
+
+.period-label {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.period-dates {
+  font-size: 14px;
+  color: #666;
+}
+
+.vs-divider {
+  font-size: 20px;
+  font-weight: 700;
+  color: #6b7280;
+  padding: 0 16px;
+}
+
+.comparison-summary {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 24px;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 6px;
+  flex-wrap: wrap;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.summary-label {
+  font-size: 12px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.summary-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+}
+
+.summary-item.increased .summary-value {
+  color: #ef4444;
+}
+
+.summary-item.decreased .summary-value {
+  color: #10b981;
+}
+
+.summary-item.stable .summary-value {
+  color: #6b7280;
+}
+
+.export-section {
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.export-excel-button {
+  padding: 12px 24px;
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.export-excel-button:hover {
+  background: #059669;
+}
+
+.comparison-table-container {
+  overflow-x: auto;
+  margin-top: 24px;
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.comparison-table thead {
+  background: #f9fafb;
+}
+
+.comparison-table th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #374151;
+  border-bottom: 2px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  background: #f9fafb;
+}
+
+.comparison-table td {
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+  color: #666;
+}
+
+.comparison-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.product-name {
+  font-weight: 500;
+  color: #333;
+}
+
+.product-type {
+  text-transform: capitalize;
+  color: #6b7280;
+}
+
+.previous-price {
+  color: #6b7280;
+}
+
+.current-price {
+  font-weight: 600;
+  color: #333;
+}
+
+.price-change {
+  font-weight: 600;
+}
+
+.price-change.increased {
+  color: #ef4444;
+}
+
+.price-change.decreased {
+  color: #10b981;
+}
+
+.price-change-percent {
+  font-weight: 600;
+}
+
+.price-change-percent.increased {
+  color: #ef4444;
+}
+
+.price-change-percent.decreased {
+  color: #10b981;
+}
+
+.trend-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.trend-icon {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.trend-icon.increasing {
+  color: #ef4444;
+}
+
+.trend-icon.decreasing {
+  color: #10b981;
+}
+
+.trend-icon.stable {
+  color: #6b7280;
+}
+
+.trend-icon.new {
+  font-size: 16px;
+}
+
+.trend-text {
+  text-transform: capitalize;
+  font-size: 12px;
+  color: #666;
+}
+
+.loading,
+.error,
+.no-data {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  font-style: italic;
+}
+
+.error {
+  color: #ef4444;
+}
+
+@media (max-width: 768px) {
+  .period-info {
+    flex-direction: column;
+  }
+
+  .vs-divider {
+    padding: 8px 0;
+  }
+
+  .comparison-summary {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .comparison-table {
+    font-size: 12px;
+  }
+
+  .comparison-table th,
+  .comparison-table td {
+    padding: 8px;
+  }
+}
+

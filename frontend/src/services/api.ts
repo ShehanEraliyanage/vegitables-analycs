@@ -235,6 +235,16 @@ export const apiService = {
     const response = await api.get(`/prices/product/${productId}/last`);
     return response.data;
   },
+
+  // Period Comparison
+  getPeriodComparison: async (params: {
+    period: 'day' | 'week' | 'month' | 'three-month' | 'six-month' | 'year';
+    productId?: number;
+    productType?: string;
+  }) => {
+    const response = await api.get('/analytics/period-comparison', { params });
+    return response.data;
+  },
 };
 
 export default api;
