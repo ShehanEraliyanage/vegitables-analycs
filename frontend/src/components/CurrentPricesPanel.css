@@ -129,17 +129,39 @@
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+  will-change: transform, box-shadow;
+}
+
+.export-excel-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.export-excel-button:hover:not(:disabled)::before {
+  width: 300px;
+  height: 300px;
 }
 
 .export-excel-button:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 16px rgba(16, 185, 129, 0.4);
 }
 
 .export-excel-button:active:not(:disabled) {
-  transform: translateY(0);
+  transform: translateY(-1px) scale(1);
+  transition: transform 0.1s ease;
 }
 
 .export-excel-button:disabled {
@@ -159,6 +181,32 @@
   margin-bottom: 2rem;
 }
 
+/* Stagger animation for price cards */
+.current-prices-grid .price-card {
+  animation: fadeInScale 0.5s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+}
+
+.current-prices-grid .price-card:nth-child(1) { animation-delay: 0.05s; }
+.current-prices-grid .price-card:nth-child(2) { animation-delay: 0.1s; }
+.current-prices-grid .price-card:nth-child(3) { animation-delay: 0.15s; }
+.current-prices-grid .price-card:nth-child(4) { animation-delay: 0.2s; }
+.current-prices-grid .price-card:nth-child(5) { animation-delay: 0.25s; }
+.current-prices-grid .price-card:nth-child(6) { animation-delay: 0.3s; }
+.current-prices-grid .price-card:nth-child(7) { animation-delay: 0.35s; }
+.current-prices-grid .price-card:nth-child(8) { animation-delay: 0.4s; }
+.current-prices-grid .price-card:nth-child(n+9) { animation-delay: 0.45s; }
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
 /* Price Card */
 .price-card {
   background: var(--bg-primary);
@@ -169,6 +217,7 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  will-change: transform, box-shadow;
 }
 
 .price-card::before {
@@ -185,9 +234,14 @@
 }
 
 .price-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.15);
   border-color: var(--primary-color);
+}
+
+.price-card:active {
+  transform: translateY(-2px) scale(1);
+  transition: transform 0.1s ease;
 }
 
 .price-card:hover::before {
@@ -280,8 +334,12 @@
 }
 
 .price-item:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px) scale(1.02);
   box-shadow: var(--shadow-md);
+}
+
+.price-item {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .price-item.price-min {

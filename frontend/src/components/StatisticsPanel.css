@@ -34,6 +34,32 @@
   gap: 1.5rem;
 }
 
+/* Stagger animation for stat cards */
+.statistics-grid .stat-card {
+  animation: fadeInScale 0.5s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+}
+
+.statistics-grid .stat-card:nth-child(1) { animation-delay: 0.05s; }
+.statistics-grid .stat-card:nth-child(2) { animation-delay: 0.1s; }
+.statistics-grid .stat-card:nth-child(3) { animation-delay: 0.15s; }
+.statistics-grid .stat-card:nth-child(4) { animation-delay: 0.2s; }
+.statistics-grid .stat-card:nth-child(5) { animation-delay: 0.25s; }
+.statistics-grid .stat-card:nth-child(6) { animation-delay: 0.3s; }
+.statistics-grid .stat-card:nth-child(7) { animation-delay: 0.35s; }
+.statistics-grid .stat-card:nth-child(8) { animation-delay: 0.4s; }
+.statistics-grid .stat-card:nth-child(n+9) { animation-delay: 0.45s; }
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
 .stat-card {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding: 1.5rem;
@@ -43,6 +69,7 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  will-change: transform, box-shadow;
 }
 
 .stat-card::before {
@@ -71,8 +98,18 @@
 }
 
 .stat-card.enhanced:hover {
-  transform: translateY(-5px) scale(1.02);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 12px 24px rgba(102, 126, 234, 0.4);
+}
+
+.stat-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+}
+
+.stat-card:active {
+  transform: translateY(-2px) scale(1);
+  transition: transform 0.1s ease;
 }
 
 .stat-icon {
@@ -80,6 +117,11 @@
   line-height: 1;
   flex-shrink: 0;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stat-card:hover .stat-icon {
+  transform: scale(1.1) rotate(5deg);
 }
 
 .stat-content {
@@ -102,6 +144,11 @@
   line-height: 1.2;
   margin-bottom: 0.25rem;
   word-break: break-word;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stat-card:hover .stat-value {
+  transform: scale(1.05);
 }
 
 .stat-description {

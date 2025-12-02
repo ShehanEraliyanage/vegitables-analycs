@@ -27,9 +27,14 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background: linear-gradient(90deg, var(--bg-tertiary) 25%, var(--bg-hover) 50%, var(--bg-tertiary) 75%);
   background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+[data-theme="dark"] .skeleton-avatar {
+  background: linear-gradient(90deg, #404040 25%, #333333 50%, #404040 75%);
+  background-size: 200% 100%;
 }
 
 .skeleton-text-group {
@@ -48,9 +53,14 @@
 .skeleton-line {
   height: 12px;
   border-radius: 6px;
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background: linear-gradient(90deg, var(--bg-tertiary) 25%, var(--bg-hover) 50%, var(--bg-tertiary) 75%);
   background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+[data-theme="dark"] .skeleton-line {
+  background: linear-gradient(90deg, #404040 25%, #333333 50%, #404040 75%);
+  background-size: 200% 100%;
 }
 
 .skeleton-line.short {
@@ -81,9 +91,15 @@
   flex: 1;
   max-width: 60px;
   border-radius: 4px 4px 0 0;
-  background: linear-gradient(180deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background: linear-gradient(180deg, var(--bg-tertiary) 25%, var(--bg-hover) 50%, var(--bg-tertiary) 75%);
   background-size: 100% 200%;
-  animation: shimmer 1.5s infinite;
+  animation: shimmer 1.5s ease-in-out infinite, pulse 2s ease-in-out infinite;
+  animation-delay: calc(var(--index, 0) * 0.1s);
+}
+
+[data-theme="dark"] .skeleton-bar {
+  background: linear-gradient(180deg, #404040 25%, #333333 50%, #404040 75%);
+  background-size: 100% 200%;
 }
 
 .skeleton-table {
@@ -114,9 +130,14 @@
   width: 48px;
   height: 48px;
   border-radius: 8px;
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background: linear-gradient(90deg, var(--bg-tertiary) 25%, var(--bg-hover) 50%, var(--bg-tertiary) 75%);
   background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+[data-theme="dark"] .skeleton-icon {
+  background: linear-gradient(90deg, #404040 25%, #333333 50%, #404040 75%);
+  background-size: 200% 100%;
 }
 
 .skeleton-stat-content {
