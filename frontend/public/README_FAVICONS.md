@@ -46,3 +46,4 @@ pwa-asset-generator favicon.svg public/ --icon-only
 - PNG files are needed for older browsers and mobile devices
 - All favicon references are already configured in `index.html`
 
+

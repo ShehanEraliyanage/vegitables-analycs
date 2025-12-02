@@ -124,21 +124,21 @@ const TrendsPanel = ({ startDate, endDate, productId }: TrendsPanelProps) => {
         </div>
         <ResponsiveContainer width="100%" height={400}>
           <BarChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 100 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" />
             <XAxis 
               dataKey="name" 
               angle={-45} 
               textAnchor="end" 
               height={120}
-              stroke="#6b7280"
+              stroke="var(--text-secondary)"
               style={{ fontSize: '11px' }}
-              tick={{ fill: '#6b7280' }}
+              tick={{ fill: 'var(--text-secondary)' }}
             />
             <YAxis 
-              stroke="#6b7280"
+              stroke="var(--text-secondary)"
               style={{ fontSize: '12px' }}
-              tick={{ fill: '#6b7280' }}
-              label={{ value: 'Price Change (%)', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fill: '#6b7280' } }}
+              tick={{ fill: 'var(--text-secondary)' }}
+              label={{ value: 'Price Change (%)', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fill: 'var(--text-secondary)' } }}
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend 
