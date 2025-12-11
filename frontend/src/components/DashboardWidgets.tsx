@@ -1,6 +1,6 @@
 import { useQuery } from 'react-query';
 import { apiService, Statistics } from '../services/api';
-import { FaArrowUp, FaArrowDown, FaEquals, FaChartLine, FaDollarSign, FaBoxes } from 'react-icons/fa';
+import { FaArrowUp, FaArrowDown, FaChartLine, FaDollarSign, FaBoxes } from 'react-icons/fa';
 import LoadingSkeleton from './LoadingSkeleton';
 import './DashboardWidgets.css';
 
@@ -20,7 +20,9 @@ const DashboardWidgets = ({ selectedProductId, startDate, endDate }: DashboardWi
     }),
   );
 
-  const { data: latestPrices } = useQuery(
+  // Prefetch latest prices if needed, or remove if unused completely. 
+  // keeping the query if it caches data used elsewhere, but variable is unused.
+  useQuery(
     'latest-prices',
     () => apiService.getLatestPrices(),
     {
@@ -31,7 +33,7 @@ const DashboardWidgets = ({ selectedProductId, startDate, endDate }: DashboardWi
   if (isLoading) {
     return (
       <div className="dashboard-widgets">
-        <LoadingSkeleton type="widget" count={4} />
+        <LoadingSkeleton type="stat" count={4} />
       </div>
     );
   }

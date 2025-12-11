@@ -1,5 +1,4 @@
 import {
-  LineChart,
   Line,
   BarChart,
   Bar,
@@ -32,7 +31,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
         <p className="tooltip-label">{`Period: ${label}`}</p>
         {payload.map((entry: any, index: number) => (
           <p key={index} className="tooltip-item" style={{ color: entry.color }}>
-            {`${entry.name}: Rs. ${entry.value.toFixed(2)}`}
+            {`${entry.name}: Rs. ${Number(entry.value).toFixed(2)}`}
           </p>
         ))}
       </div>
@@ -129,8 +128,7 @@ const ChartPanel = ({ analytics, loading, timePeriod }: ChartPanelProps) => {
     .sort((a: any, b: any) => b.avgPrice - a.avgPrice)
     .slice(0, 15);
 
-  // Color scheme
-  const colors = ['#667eea', '#764ba2', '#f093fb', '#4facfe', '#00f2fe', '#43e97b', '#fa709a', '#fee140', '#30cfd0', '#330867'];
+
   const getBarColor = (value: number, maxValue: number) => {
     const ratio = value / maxValue;
     if (ratio > 0.8) return '#ef4444';
@@ -300,7 +298,7 @@ const ChartPanel = ({ analytics, loading, timePeriod }: ChartPanelProps) => {
                       <div className="custom-tooltip">
                         <p className="tooltip-label">{data.fullProduct}</p>
                         <p className="tooltip-item" style={{ color: payload[0].color }}>
-                          Average Price: Rs. {payload[0].value?.toFixed(2)}
+                          Average Price: Rs. {Number(payload[0].value).toFixed(2)}
                         </p>
                         <p className="tooltip-item" style={{ color: '#f59e0b' }}>
                           Volatility: {data.avgVolatility.toFixed(2)}

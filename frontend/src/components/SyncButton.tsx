@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from 'react-query';
 import Swal from 'sweetalert2';
-import toast from 'react-hot-toast';
 import { apiService } from '../services/api';
 import './SyncButton.css';
 

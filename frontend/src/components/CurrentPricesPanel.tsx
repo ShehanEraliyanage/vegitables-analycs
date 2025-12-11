@@ -41,7 +41,7 @@ const CurrentPricesPanel = ({ selectedProductId, startDate, endDate }: CurrentPr
 
   const isLoading = todayLoading || latestLoading;
   const hasTodayData = todayData?.data && todayData.data.length > 0;
-  const hasLatestData = latestData?.data && latestData.data.length > 0;
+  // Check if we have data
 
   const currentData = hasTodayData ? todayData : latestData;
   const isToday = hasTodayData;

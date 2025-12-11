@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import './ToastNotification.css';
 

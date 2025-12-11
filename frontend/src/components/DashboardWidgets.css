@@ -1,30 +1,32 @@
 .dashboard-widgets {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
 
 .widget-card {
-  background: var(--bg-primary);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
+  background: var(--bg-glass-strong);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: var(--glass-border);
+  border-radius: var(--radius-lg);
   padding: 1.5rem;
-  transition: all 0.3s ease;
+  transition: var(--transition-base);
   box-shadow: var(--shadow-sm);
 }
 
 .widget-card:hover {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
-  border-color: var(--primary-color);
+  box-shadow: var(--shadow-glass);
+  border-color: var(--primary);
 }
 
 .widget-header {
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
 }
 
 .widget-icon {
@@ -34,8 +36,9 @@
   justify-content: center;
   width: 48px;
   height: 48px;
-  border-radius: 10px;
-  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  color: var(--primary);
 }
 
 .widget-title {
@@ -50,7 +53,7 @@
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
 }
 
 .widget-value {
@@ -58,6 +61,7 @@
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1;
+  letter-spacing: -1px;
 }
 
 .widget-change {
@@ -67,23 +71,22 @@
   font-size: 0.875rem;
   font-weight: 600;
   padding: 0.25rem 0.5rem;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
 }
 
 .widget-change.positive {
-  color: var(--success-color);
-  background: rgba(34, 197, 94, 0.1);
+  color: var(--success);
+  background: rgba(16, 185, 129, 0.1);
 }
 
 .widget-change.negative {
-  color: var(--error-color);
+  color: var(--error);
   background: rgba(239, 68, 68, 0.1);
 }
 
 .widget-description {
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   color: var(--text-tertiary);
-  margin-top: 0.5rem;
 }
 
 @media (max-width: 768px) {
@@ -91,9 +94,4 @@
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
-  .widget-value {
-    font-size: 1.5rem;
-  }
 }
-

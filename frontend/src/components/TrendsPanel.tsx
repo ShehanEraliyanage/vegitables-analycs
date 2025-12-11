@@ -1,6 +1,6 @@
 import { useQuery } from 'react-query';
 import { apiService } from '../services/api';
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
 import LoadingSkeleton from './LoadingSkeleton';
 import EmptyState from './EmptyState';
 import './TrendsPanel.css';

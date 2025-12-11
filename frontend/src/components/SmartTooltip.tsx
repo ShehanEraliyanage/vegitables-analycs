@@ -20,7 +20,7 @@ const SmartTooltip = ({
   const [tooltipPosition, setTooltipPosition] = useState(position);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (isVisible && tooltipRef.current && triggerRef.current) {

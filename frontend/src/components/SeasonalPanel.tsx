@@ -47,7 +47,7 @@ const SeasonalPanel = ({ productId }: SeasonalPanelProps) => {
   const chartData: any[] = [];
   for (let month = 1; month <= 12; month++) {
     const monthData: any = { month: new Date(selectedYear, month - 1, 1).toLocaleString('default', { month: 'short' }) };
-    productGroups.forEach((items, productId) => {
+    productGroups.forEach((items, _) => {
       const monthItem = items.find((item: any) => item.month === month);
       if (monthItem) {
         monthData[`${monthItem.productName}`] = monthItem.avgPrice;

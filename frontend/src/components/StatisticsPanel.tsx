@@ -121,8 +121,7 @@ const StatisticsPanel = ({ statistics, loading }: StatisticsPanelProps) => {
         {statCards.map((card, index) => (
           <div 
             key={index} 
-            className="stat-card enhanced"
-            style={{ background: card.color }}
+            className={`stat-card enhanced variant-${index % 5}`}
           >
             <div className="stat-icon">{card.icon}</div>
             <div className="stat-content">
