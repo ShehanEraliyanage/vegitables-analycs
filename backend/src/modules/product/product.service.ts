@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, ILike } from 'typeorm';
 import { Product } from '../../common/entities/product.entity';
 
 @Injectable()
@@ -15,6 +15,17 @@ export class ProductService {
       return this.productRepository.find({ where: { type } });
     }
     return this.productRepository.find();
+  }
+
+  async searchByName(q: string, limit = 20): Promise<Product[]> {
+    if (!q || q.trim().length < 2) {
+      return [];
+    }
+    return this.productRepository.find({
+      where: { name: ILike(`%${q.trim()}%`) },
+      take: limit,
+      order: { name: 'ASC' },
+    });
   }
 
   async findOne(id: number): Promise<Product> {

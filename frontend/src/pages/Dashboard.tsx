@@ -22,13 +22,14 @@ import Sidebar from '../components/Sidebar';
 import ThemeToggle from '../components/ThemeToggle';
 import DashboardWidgets from '../components/DashboardWidgets';
 import FavoritesPanel from '../components/FavoritesPanel';
+import GroceryListPanel from '../components/GroceryListPanel';
 import ExportButton from '../components/ExportButton';
 import MetaTags from '../components/MetaTags';
 import { showSuccessToast } from '../components/ToastNotification';
 import './Dashboard.css';
 
 type TimePeriod = 'weekly' | 'monthly' | 'quarterly' | 'six-month' | 'annual';
-type AnalyticsTab = 'current' | 'overview' | 'trends' | 'performers' | 'comparison' | 'seasonal' | 'distribution' | 'period-comparison' | 'favorites';
+type AnalyticsTab = 'current' | 'grocery' | 'overview' | 'trends' | 'performers' | 'comparison' | 'seasonal' | 'distribution' | 'period-comparison' | 'favorites';
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState<AnalyticsTab>('current');
@@ -130,7 +131,8 @@ const Dashboard = () => {
 
   // Handle keyboard shortcuts
   const handleShortcut = (key: string) => {
-    if (key === '1') setActiveTab('current');
+    if (key === '0') setActiveTab('grocery');
+    else if (key === '1') setActiveTab('current');
     else if (key === '2') setActiveTab('overview');
     else if (key === '3') setActiveTab('trends');
     else if (key === '4') setActiveTab('performers');
@@ -213,6 +215,7 @@ const Dashboard = () => {
   const getPageTitle = () => {
     const tabNames: { [key: string]: string } = {
       'current': 'Current Prices',
+      'grocery': 'Grocery List',
       'overview': 'Overview & Statistics',
       'trends': 'Price Trends',
       'performers': 'Top Performers',
@@ -228,6 +231,7 @@ const Dashboard = () => {
   const getPageDescription = () => {
     const descriptions: { [key: string]: string } = {
       'current': 'View current market prices for vegetables and fruits in Sri Lanka',
+      'grocery': 'Build your shopping list with Organic and Non-organic options, and export to PDF',
       'overview': 'Comprehensive statistics and analytics overview',
       'trends': 'Analyze price trends and patterns over time',
       'performers': 'Top performing products with highest price changes',
@@ -334,6 +338,15 @@ const Dashboard = () => {
                   💰 Current Prices
                 </button>
               </SmartTooltip>
+              <SmartTooltip content="Press 0 to switch (Grocery List)">
+                <button
+                  className={`tab-button ${activeTab === 'grocery' ? 'active' : ''}`}
+                  onClick={() => handleTabChange('grocery')}
+                  aria-label="Grocery List"
+                >
+                  🛒 Grocery List
+                </button>
+              </SmartTooltip>
               <SmartTooltip content="Press 2 to switch (Overview)">
                 <button
                   className={`tab-button ${activeTab === 'overview' ? 'active' : ''}`}
@@ -416,6 +429,8 @@ const Dashboard = () => {
                   endDate={endDate}
                 />
               )}
+
+              {activeTab === 'grocery' && <GroceryListPanel />}
 
               {activeTab === 'overview' && (
                 <>

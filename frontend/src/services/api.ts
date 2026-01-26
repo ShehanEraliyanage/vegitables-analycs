@@ -245,6 +245,84 @@ export const apiService = {
     const response = await api.get('/analytics/period-comparison', { params });
     return response.data;
   },
+
+  // Product search (for Grocery List)
+  searchProducts: async (q: string, limit?: number): Promise<Product[]> => {
+    const response = await api.get('/products/search', {
+      params: { q, limit: limit ?? 20 },
+    });
+    return response.data.data ?? [];
+  },
+
+  // Grocery List
+  getGroceryPrice: async (
+    productId: number,
+    isOrganic: boolean,
+  ): Promise<{ pricePerKg: number; isAnalysed: boolean }> => {
+    const response = await api.get('/grocery-list/price', {
+      params: { productId, isOrganic },
+    });
+    return response.data.data;
+  },
+
+  getGroceryLists: async (): Promise<
+    { id: number; name: string; createdAt: string; itemCount: number }[]
+  > => {
+    const response = await api.get('/grocery-list');
+    return response.data.data ?? [];
+  },
+
+  getGroceryList: async (id: number): Promise<{
+    id: number;
+    name: string;
+    items: Array<{
+      id: number;
+      productId: number;
+      isOrganic: boolean;
+      quantityKg: number;
+      pricePerKg: number;
+      isAnalysed: boolean;
+      product?: { id: number; name: string; type: string };
+    }>;
+  }> => {
+    const response = await api.get(`/grocery-list/${id}`);
+    return response.data.data;
+  },
+
+  createGroceryList: async (dto: {
+    name: string;
+    items: Array<{
+      productId: number;
+      isOrganic: boolean;
+      quantityKg: number;
+      pricePerKg: number;
+      isAnalysed: boolean;
+    }>;
+  }) => {
+    const response = await api.post('/grocery-list', dto);
+    return response.data.data;
+  },
+
+  updateGroceryList: async (
+    id: number,
+    dto: {
+      name?: string;
+      items: Array<{
+        productId: number;
+        isOrganic: boolean;
+        quantityKg: number;
+        pricePerKg: number;
+        isAnalysed: boolean;
+      }>;
+    },
+  ) => {
+    const response = await api.put(`/grocery-list/${id}`, dto);
+    return response.data.data;
+  },
+
+  deleteGroceryList: async (id: number) => {
+    await api.delete(`/grocery-list/${id}`);
+  },
 };
 
 export default api;

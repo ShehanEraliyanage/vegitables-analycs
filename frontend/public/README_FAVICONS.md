@@ -47,3 +47,7 @@ pwa-asset-generator favicon.svg public/ --icon-only
 - All favicon references are already configured in `index.html`
 
 
+
+
+
+

@@ -14,6 +14,15 @@ export class ProductController {
     };
   }
 
+  @Get('search')
+  async search(@Query('q') q?: string, @Query('limit') limit?: string) {
+    const products = await this.productService.searchByName(
+      q || '',
+      limit ? +limit : 20,
+    );
+    return { data: products, count: products.length };
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     const product = await this.productService.findOne(+id);

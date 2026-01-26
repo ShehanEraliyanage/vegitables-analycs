@@ -58,6 +58,7 @@ const KeyboardShortcuts = ({ onShortcut, isOpen, onToggle }: KeyboardShortcutsPr
   const shortcuts = [
     { key: '?', description: 'Show/hide keyboard shortcuts' },
     { key: 'Esc', description: 'Close dialogs and help' },
+    { key: '0', description: 'Switch to Grocery List tab' },
     { key: '1', description: 'Switch to Current Prices tab' },
     { key: '2', description: 'Switch to Overview tab' },
     { key: '3', description: 'Switch to Price Trends tab' },

@@ -1,0 +1,582 @@
+/* Grocery List Panel - Fresh, market-inspired UI */
+.grocery-list-panel {
+  --grocery-organic: #059669;
+  --grocery-organic-bg: rgba(5, 150, 105, 0.12);
+  --grocery-nonorganic: #64748b;
+  --grocery-analysed: #d97706;
+  --grocery-analysed-bg: rgba(217, 119, 6, 0.12);
+  padding: 1.5rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.grocery-list-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.grocery-list-header h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 0.35rem 0;
+}
+
+.grocery-subtitle {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.grocery-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Buttons */
+.grocery-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: none;
+  transition: var(--transition-base);
+}
+
+.grocery-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.grocery-btn-ghost {
+  background: var(--bg-glass);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-light);
+}
+
+.grocery-btn-ghost:hover:not(:disabled) {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.grocery-btn-primary {
+  background: linear-gradient(135deg, var(--grocery-organic) 0%, #047857 100%);
+  color: white;
+  box-shadow: var(--shadow-md);
+}
+
+.grocery-btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
+}
+
+.grocery-btn-danger-ghost {
+  background: transparent;
+  color: var(--error);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.grocery-btn-danger-ghost:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* Add block */
+.grocery-add-block {
+  background: var(--bg-glass-strong);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  margin-bottom: 1.75rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.grocery-category-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.grocery-toggle-label {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.grocery-toggle-btn {
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-base);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.grocery-toggle-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.grocery-toggle-btn.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+
+.grocery-toggle-btn.organic.active {
+  background: linear-gradient(135deg, var(--grocery-organic) 0%, #047857 100%);
+  border-color: var(--grocery-organic);
+}
+
+/* Search */
+.grocery-search-wrap {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.grocery-search-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 1rem;
+  transition: var(--transition-base);
+}
+
+.grocery-search-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.grocery-search-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.grocery-search-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  background: var(--bg-glass-strong);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  z-index: 50;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.grocery-search-loading,
+.grocery-search-empty {
+  padding: 1rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.grocery-search-list {
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem 0;
+}
+
+.grocery-search-list li {
+  padding: 0.65rem 1rem;
+  cursor: pointer;
+  transition: background 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.grocery-search-list li:hover {
+  background: var(--bg-glass);
+}
+
+.product-type-tag {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  text-transform: capitalize;
+}
+
+.grocery-search-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+}
+
+/* Quantity card */
+.grocery-quantity-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--grocery-organic-bg);
+  border: 1px dashed var(--grocery-organic);
+  border-radius: var(--radius-md);
+  margin-top: 0.5rem;
+}
+
+.grocery-selected-name {
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.organic-icon {
+  color: var(--grocery-organic);
+  font-size: 0.9rem;
+}
+
+.grocery-qty-inputs {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.grocery-qty-inputs label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.grocery-qty-inputs input {
+  width: 4rem;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+.grocery-qty-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-left: auto;
+}
+
+/* Items list */
+.grocery-list-section {
+  margin-top: 1rem;
+}
+
+.grocery-items-list {
+  list-style: none;
+  margin: 0 0 1.5rem 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.grocery-item-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--bg-glass-strong);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  transition: var(--transition-base);
+}
+
+.grocery-item-row:hover {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.grocery-item-main {
+  flex: 1;
+  min-width: 180px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.grocery-item-name {
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.organic-leaf {
+  color: var(--grocery-organic);
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.grocery-item-badge {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.grocery-item-badge.organic {
+  background: var(--grocery-organic-bg);
+  color: var(--grocery-organic);
+}
+
+.grocery-item-badge.non-organic {
+  background: rgba(100, 116, 139, 0.15);
+  color: var(--grocery-nonorganic);
+}
+
+.grocery-item-analysed {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  background: var(--grocery-analysed-bg);
+  color: var(--grocery-analysed);
+  font-weight: 500;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: help;
+}
+
+.grocery-item-analysed-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: rgba(217, 119, 6, 0.18);
+  color: var(--grocery-analysed);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+.grocery-item-analysed::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  transform: translateX(-50%);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-md);
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: var(--transition-base);
+  z-index: 5;
+}
+
+.grocery-item-analysed::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 2px);
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--bg-secondary);
+  opacity: 0;
+  transition: var(--transition-base);
+  z-index: 4;
+}
+
+.grocery-item-analysed:hover::after,
+.grocery-item-analysed:hover::before {
+  opacity: 1;
+}
+
+.grocery-item-details {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.grocery-item-total {
+  font-weight: 700;
+  color: var(--text-primary);
+  min-width: 5rem;
+  text-align: right;
+}
+
+.grocery-item-remove {
+  padding: 0.4rem;
+  border: none;
+  background: transparent;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: var(--transition-base);
+}
+
+.grocery-item-remove:hover {
+  color: var(--error);
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* Totals card */
+.grocery-totals-card {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--shadow-lg);
+}
+
+.grocery-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.35rem 0;
+  font-size: 0.95rem;
+}
+
+.grocery-total-row.organic {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.grocery-total-row.grand {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.grocery-total-note {
+  margin-top: 0.6rem;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.35;
+}
+
+/* Modals */
+.grocery-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.grocery-modal {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-light);
+}
+
+.grocery-modal h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.2rem;
+}
+
+.grocery-modal-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.grocery-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.grocery-no-lists {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin: 0 0 1rem 0;
+}
+
+.grocery-load-list {
+  list-style: none;
+  margin: 0 0 1rem 0;
+  padding: 0;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.grocery-load-item {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  cursor: pointer;
+  text-align: left;
+  transition: var(--transition-base);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.grocery-load-item:hover {
+  border-color: var(--primary);
+  background: var(--bg-glass);
+}
+
+.grocery-load-name {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.grocery-load-meta {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* Dark theme tweaks */
+[data-theme='dark'] .grocery-quantity-card {
+  background: rgba(5, 150, 105, 0.15);
+}
+
+[data-theme='dark'] .grocery-item-badge.non-organic {
+  background: rgba(100, 116, 139, 0.25);
+}

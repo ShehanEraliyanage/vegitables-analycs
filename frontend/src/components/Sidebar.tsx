@@ -8,12 +8,13 @@ import {
   FaChartBar,
   FaChartPie,
   FaStar,
+  FaShoppingCart,
   FaTimes,
   FaBars
 } from 'react-icons/fa';
 import './Sidebar.css';
 
-type AnalyticsTab = 'current' | 'overview' | 'trends' | 'performers' | 'comparison' | 'seasonal' | 'distribution' | 'period-comparison' | 'favorites';
+type AnalyticsTab = 'current' | 'grocery' | 'overview' | 'trends' | 'performers' | 'comparison' | 'seasonal' | 'distribution' | 'period-comparison' | 'favorites';
 
 interface SidebarProps {
   activeTab: AnalyticsTab;
@@ -64,6 +65,7 @@ const Sidebar = ({ activeTab, onTabChange, isOpen, onToggle, onCollapseChange }:
 
   const menuItems = [
     { id: 'current' as AnalyticsTab, label: 'Current Prices', icon: FaHome, shortcut: '1' },
+    { id: 'grocery' as AnalyticsTab, label: 'Grocery List', icon: FaShoppingCart, shortcut: '0' },
     { id: 'overview' as AnalyticsTab, label: 'Overview', icon: FaChartBar, shortcut: '2' },
     { id: 'trends' as AnalyticsTab, label: 'Price Trends', icon: FaChartLine, shortcut: '3' },
     { id: 'performers' as AnalyticsTab, label: 'Top Performers', icon: FaFire, shortcut: '4' },

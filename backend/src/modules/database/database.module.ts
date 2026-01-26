@@ -3,6 +3,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Product } from '../../common/entities/product.entity';
 import { Price } from '../../common/entities/price.entity';
+import { GroceryList } from '../../common/entities/grocery-list.entity';
+import { GroceryListItem } from '../../common/entities/grocery-list-item.entity';
 
 @Module({
   imports: [
@@ -15,7 +17,7 @@ import { Price } from '../../common/entities/price.entity';
         username: configService.get('DB_USERNAME', 'postgres'),
         password: configService.get('DB_PASSWORD', 'postgres'),
         database: configService.get('DB_DATABASE', 'vegetables_analytics'),
-        entities: [Product, Price],
+        entities: [Product, Price, GroceryList, GroceryListItem],
         migrations: ['dist/database/migrations/*.js'],
         synchronize: false, // Use migrations instead
         logging: configService.get('NODE_ENV') === 'development',
