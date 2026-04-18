@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from 'react-query';
+import { FaFileExcel } from 'react-icons/fa';
 import { apiService } from '../services/api';
 import * as XLSX from 'xlsx';
 import { showSuccessToast, showErrorToast } from './ToastNotification';
@@ -282,7 +283,7 @@ const PeriodComparisonPanel = ({ selectedProductId }: PeriodComparisonPanelProps
                 <option value="increasing">↑ Increasing</option>
                 <option value="decreasing">↓ Decreasing</option>
                 <option value="stable">→ Stable</option>
-                <option value="new">🆕 New</option>
+                <option value="new">New</option>
               </select>
             </div>
 
@@ -304,8 +305,9 @@ const PeriodComparisonPanel = ({ selectedProductId }: PeriodComparisonPanelProps
           </div>
 
           <div className="export-section">
-            <button className="export-excel-button" onClick={exportToExcel}>
-              📊 Export to Excel
+            <button type="button" className="export-excel-button" onClick={exportToExcel}>
+              <FaFileExcel className="export-excel-icon" aria-hidden />
+              Export to Excel
             </button>
           </div>
 

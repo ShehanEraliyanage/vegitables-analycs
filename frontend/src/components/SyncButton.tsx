@@ -1,5 +1,12 @@
 import { useMutation, useQueryClient } from 'react-query';
 import Swal from 'sweetalert2';
+import {
+  FaChartBar,
+  FaCalendarAlt,
+  FaBolt,
+  FaChartLine,
+  FaRocket,
+} from 'react-icons/fa';
 import { apiService } from '../services/api';
 import './SyncButton.css';
 
@@ -28,7 +35,7 @@ const SyncButton = ({ hasData }: SyncButtonProps) => {
               </p>
             </div>
           `,
-          confirmButtonColor: '#667eea',
+          confirmButtonColor: '#15803d',
           confirmButtonText: 'Great!',
           timer: 3000,
         });
@@ -75,13 +82,13 @@ const SyncButton = ({ hasData }: SyncButtonProps) => {
             </p>
           </div>
           <p style="color: #6b7280; font-size: 0.9rem;">
-            ⚠️ This process cannot be interrupted once started.
+            <strong>Warning:</strong> This process cannot be interrupted once started.
           </p>
         </div>
       `,
       icon: 'question',
       showCancelButton: true,
-      confirmButtonColor: '#667eea',
+      confirmButtonColor: '#15803d',
       cancelButtonColor: '#6b7280',
       confirmButtonText: 'Yes, Start Sync',
       cancelButtonText: 'Cancel',
@@ -124,20 +131,28 @@ const SyncButton = ({ hasData }: SyncButtonProps) => {
   return (
     <div className="sync-button-container">
       <div className="sync-info">
-        <div className="sync-icon">📊</div>
+        <div className="sync-icon" aria-hidden>
+          <FaChartBar />
+        </div>
         <h3>No Data Available</h3>
         <p>Click the button below to fetch historical price data from the API.</p>
         <div className="sync-features">
           <div className="feature-item">
-            <span className="feature-icon">📅</span>
+            <span className="feature-icon" aria-hidden>
+              <FaCalendarAlt />
+            </span>
             <span>Historical data from May to November 2025</span>
           </div>
           <div className="feature-item">
-            <span className="feature-icon">⚡</span>
+            <span className="feature-icon" aria-hidden>
+              <FaBolt />
+            </span>
             <span>Automated daily sync at 2:00 PM</span>
           </div>
           <div className="feature-item">
-            <span className="feature-icon">📈</span>
+            <span className="feature-icon" aria-hidden>
+              <FaChartLine />
+            </span>
             <span>Comprehensive analytics & charts</span>
           </div>
         </div>
@@ -154,7 +169,9 @@ const SyncButton = ({ hasData }: SyncButtonProps) => {
           </>
         ) : (
           <>
-            <span className="button-icon">🚀</span>
+            <span className="button-icon" aria-hidden>
+              <FaRocket />
+            </span>
             Start Initial Data Sync
           </>
         )}

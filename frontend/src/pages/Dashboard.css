@@ -40,6 +40,24 @@
   gap: 1.5rem;
 }
 
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.analytics-tabs .tab-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.tab-button-icon {
+  flex-shrink: 0;
+  opacity: 0.9;
+}
+
 .dashboard-header h1 {
   font-size: 2rem;
   margin-bottom: 0.25rem;

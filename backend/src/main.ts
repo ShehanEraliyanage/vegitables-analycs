@@ -29,14 +29,28 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalInterceptors(new LoggingInterceptor());
 
-  // Swagger Setup
+  // Swagger Setup (Harvest Market brand bar aligns with frontend --primary)
   const config = new DocumentBuilder()
     .setTitle('Vegetables Analytics API')
-    .setDescription('API documentation for the Vegetables Analytics Platform')
+    .setDescription(
+      'REST API for Sri Lankan vegetable and fruit market price analytics: products, historical prices, statistics, trends, scheduled sync, and grocery lists. Consumed by the Vegetables Analytics web dashboard.',
+    )
     .setVersion('1.0')
+    .setContact('Vegetables Analytics', 'https://vegetables-analytics.com', '')
+    .addTag('products', 'Product catalog and lookups')
+    .addTag('prices', 'Price records, current and latest market prices')
+    .addTag('analytics', 'Statistics, trends, distribution, and comparisons')
+    .addTag('sync', 'Manual and scheduled synchronization from external price sources')
+    .addTag('grocery-list', 'Shopping list items and export helpers')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document);
+  SwaggerModule.setup('api/docs', app, document, {
+    customSiteTitle: 'Vegetables Analytics API · Docs',
+    customCss: `
+      .swagger-ui .topbar { background-color: #15803d; }
+      .swagger-ui .topbar .download-url-wrapper .select-label { color: #ecfdf5; }
+    `,
+  });
 
   const port = process.env.PORT || 3000;
   await app.listen(port);

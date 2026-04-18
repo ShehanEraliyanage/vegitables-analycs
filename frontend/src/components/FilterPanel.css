@@ -17,11 +17,34 @@
   border-bottom: 2px solid var(--border-color);
 }
 
-.filter-header h3 {
+.filter-panel-title {
   margin: 0;
   color: var(--text-primary);
   font-size: 1.2rem;
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filter-panel-title-icon {
+  width: 1.15rem;
+  height: 1.15rem;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.filter-label-with-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.filter-label-with-icon svg {
+  width: 0.95rem;
+  height: 0.95rem;
+  opacity: 0.9;
+  color: var(--primary);
 }
 
 .clear-filters-button {

@@ -52,7 +52,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           },
           loading: {
             style: {
-              background: '#667eea',
+              background: '#15803d',
               color: '#fff',
             },
           },

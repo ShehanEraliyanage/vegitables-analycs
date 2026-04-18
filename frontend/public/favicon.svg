@@ -1,16 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Vegetables Analytics">
   <defs>
-    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    <linearGradient id="leafGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#15803d;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0d9488;stop-opacity:1" />
     </linearGradient>
   </defs>
-  <rect width="100" height="100" rx="20" fill="url(#grad)"/>
-  <text x="50" y="70" font-family="Arial, sans-serif" font-size="60" font-weight="bold" fill="white" text-anchor="middle">V</text>
+  <rect width="100" height="100" rx="22" fill="url(#leafGrad)"/>
+  <!-- Stylized leaf + upward trend -->
+  <path fill="#fff" fill-opacity="0.95" d="M52 24c-12 4-20 14-22 26 2-8 8-14 16-17-6 8-9 18-8 29 1 10 6 19 14 25 2-12 8-22 18-30-4 10-5 21-1 31 5-6 9-14 10-23 1-15-8-29-22-35-2-1-4-2-7-2v-4z"/>
+  <path fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" d="M28 68 L42 54 L54 60 L72 38"/>
 </svg>
-
-
-
-
-
-

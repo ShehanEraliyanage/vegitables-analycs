@@ -1,5 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
 import { useQuery } from 'react-query';
+import {
+  FaBars,
+  FaDownload,
+  FaRedo,
+  FaTrashAlt,
+  FaDollarSign,
+  FaShoppingCart,
+  FaChartBar,
+} from 'react-icons/fa';
 import { apiService, Product, Statistics } from '../services/api';
 import StatisticsPanel from '../components/StatisticsPanel';
 import FilterPanel from '../components/FilterPanel';
@@ -25,14 +34,40 @@ import FavoritesPanel from '../components/FavoritesPanel';
 import GroceryListPanel from '../components/GroceryListPanel';
 import ExportButton from '../components/ExportButton';
 import MetaTags from '../components/MetaTags';
+import BrandLogo from '../components/BrandLogo';
 import { showSuccessToast } from '../components/ToastNotification';
 import './Dashboard.css';
 
 type TimePeriod = 'weekly' | 'monthly' | 'quarterly' | 'six-month' | 'annual';
 type AnalyticsTab = 'current' | 'grocery' | 'overview' | 'trends' | 'performers' | 'comparison' | 'seasonal' | 'distribution' | 'period-comparison' | 'favorites';
 
+const ANALYTICS_TABS: AnalyticsTab[] = [
+  'current',
+  'grocery',
+  'overview',
+  'trends',
+  'performers',
+  'comparison',
+  'seasonal',
+  'distribution',
+  'period-comparison',
+  'favorites',
+];
+
+function parseTabFromSearch(search: string): AnalyticsTab | null {
+  const q = search.startsWith('?') ? search.slice(1) : search;
+  const tab = new URLSearchParams(q).get('tab');
+  if (!tab) return null;
+  return ANALYTICS_TABS.includes(tab as AnalyticsTab) ? (tab as AnalyticsTab) : null;
+}
+
+function getInitialTab(): AnalyticsTab {
+  if (typeof window === 'undefined') return 'current';
+  return parseTabFromSearch(window.location.search) ?? 'current';
+}
+
 const Dashboard = () => {
-  const [activeTab, setActiveTab] = useState<AnalyticsTab>('current');
+  const [activeTab, setActiveTab] = useState<AnalyticsTab>(getInitialTab);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [timePeriod, setTimePeriod] = useState<TimePeriod>('monthly');
   const [selectedProductId, setSelectedProductId] = useState<number | undefined>();
@@ -129,6 +164,26 @@ const Dashboard = () => {
     setStartDate(start.toISOString().split('T')[0]);
   }, [timePeriod]);
 
+  // Keep ?tab= in sync for PWA shortcuts and shareable URLs
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    params.set('tab', activeTab);
+    const qs = params.toString();
+    const next = `${window.location.pathname}?${qs}${window.location.hash}`;
+    if (window.location.search !== `?${qs}`) {
+      window.history.replaceState(null, '', next);
+    }
+  }, [activeTab]);
+
+  useEffect(() => {
+    const onPopState = () => {
+      const next = parseTabFromSearch(window.location.search);
+      if (next) setActiveTab(next);
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
+
   // Handle keyboard shortcuts
   const handleShortcut = (key: string) => {
     if (key === '0') setActiveTab('grocery');
@@ -182,18 +237,24 @@ const Dashboard = () => {
     showSuccessToast('Data exported successfully!');
   };
 
-  const quickActions = [
+  const quickActions: {
+    id: string;
+    label: string;
+    icon: ReactNode;
+    onClick: () => void;
+    shortcut?: string;
+  }[] = [
     {
       id: 'export',
       label: 'Export Data',
-      icon: '📥',
+      icon: <FaDownload aria-hidden />,
       onClick: exportToCSV,
       shortcut: 'E',
     },
     {
       id: 'refresh',
       label: 'Refresh Data',
-      icon: '🔄',
+      icon: <FaRedo aria-hidden />,
       onClick: () => {
         window.location.reload();
       },
@@ -202,7 +263,7 @@ const Dashboard = () => {
     {
       id: 'clear-filters',
       label: 'Clear Filters',
-      icon: '🗑️',
+      icon: <FaTrashAlt aria-hidden />,
       onClick: () => {
         setSelectedProductId(undefined);
         setStartDate('');
@@ -272,11 +333,14 @@ const Dashboard = () => {
               onClick={() => setSidebarOpen(!sidebarOpen)}
               aria-label="Toggle menu"
             >
-              <span>☰</span>
+              <FaBars aria-hidden />
             </button>
-          <div>
+          <div className="header-brand">
+            <BrandLogo size={44} />
+            <div>
             <h1>Vegetables & Fruits Price Analytics</h1>
             <p>Sri Lanka Market Prices - Comprehensive Analytics Platform</p>
+            </div>
           </div>
           </div>
           <div className="header-actions">
@@ -335,7 +399,8 @@ const Dashboard = () => {
                   onClick={() => handleTabChange('current')}
                   aria-label="Current Prices"
                 >
-                  💰 Current Prices
+                  <FaDollarSign className="tab-button-icon" aria-hidden />
+                  Current Prices
                 </button>
               </SmartTooltip>
               <SmartTooltip content="Press 0 to switch (Grocery List)">
@@ -344,7 +409,8 @@ const Dashboard = () => {
                   onClick={() => handleTabChange('grocery')}
                   aria-label="Grocery List"
                 >
-                  🛒 Grocery List
+                  <FaShoppingCart className="tab-button-icon" aria-hidden />
+                  Grocery List
                 </button>
               </SmartTooltip>
               <SmartTooltip content="Press 2 to switch (Overview)">
@@ -407,7 +473,8 @@ const Dashboard = () => {
                   onClick={() => handleTabChange('period-comparison')}
                   aria-label="Period Comparison"
                 >
-                  📊 Period Comparison
+                  <FaChartBar className="tab-button-icon" aria-hidden />
+                  Period Comparison
                 </button>
               </SmartTooltip>
               {activeTab === 'overview' && (

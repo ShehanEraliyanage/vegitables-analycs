@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { apiService } from '../services/api';
+import { useTheme } from '../contexts/ThemeContext';
+import { cssVar } from '../utils/cssVariables';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import './SeasonalPanel.css';
 
@@ -11,6 +13,13 @@ interface SeasonalPanelProps {
 const SeasonalPanel = ({ productId }: SeasonalPanelProps) => {
   const currentYear = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState<number>(currentYear);
+  const { theme } = useTheme();
+
+  const lineColors = useMemo(
+    () =>
+      ['--chart-1', '--chart-2', '--chart-3', '--chart-4', '--chart-5'].map((v) => cssVar(v)),
+    [theme],
+  );
 
   const { data, isLoading } = useQuery(
     ['seasonal', selectedYear, productId],
@@ -88,13 +97,12 @@ const SeasonalPanel = ({ productId }: SeasonalPanelProps) => {
             <Legend />
             {products.map((productId, index) => {
               const productName = data.seasonal.find((item: any) => item.productId === productId)?.productName;
-              const colors = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#00ff00'];
               return (
                 <Line
                   key={productId}
                   type="monotone"
                   dataKey={productName}
-                  stroke={colors[index % colors.length]}
+                  stroke={lineColors[index % lineColors.length]}
                   strokeWidth={2}
                 />
               );

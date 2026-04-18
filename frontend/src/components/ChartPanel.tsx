@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import {
   Line,
   BarChart,
@@ -14,7 +15,18 @@ import {
   Cell,
   ReferenceLine,
 } from 'recharts';
+import {
+  FaChartLine,
+  FaDollarSign,
+  FaChartBar,
+  FaTrophy,
+  FaClipboardList,
+  FaBox,
+  FaCalendarAlt,
+} from 'react-icons/fa';
 import { AnalyticsResponse } from '../services/api';
+import { useTheme } from '../contexts/ThemeContext';
+import { cssVar } from '../utils/cssVariables';
 import LoadingSkeleton from './LoadingSkeleton';
 import './ChartPanel.css';
 
@@ -41,13 +53,35 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 };
 
 const ChartPanel = ({ analytics, loading, timePeriod }: ChartPanelProps) => {
+  const { theme } = useTheme();
+
+  const colors = useMemo(() => {
+    const grid = theme === 'dark' ? '#334155' : '#e2e8f0';
+    const tick = cssVar('--text-secondary', '#64748b');
+    return {
+      chart1: cssVar('--chart-1', '#15803d'),
+      chart2: cssVar('--chart-2', '#c2410c'),
+      chart3: cssVar('--chart-3', '#0d9488'),
+      chart4: cssVar('--chart-4', '#ca8a04'),
+      error: cssVar('--error', '#dc2626'),
+      success: cssVar('--success', '#16a34a'),
+      warning: cssVar('--warning', '#d97706'),
+      info: cssVar('--info', '#0d9488'),
+      grid,
+      tick,
+    };
+  }, [theme]);
+
   if (loading) {
     return (
       <div className="chart-panel">
         <div className="chart-header">
-          <div>
-            <h2>📈 Price Analysis Dashboard</h2>
-            <p className="chart-subtitle">{timePeriod.charAt(0).toUpperCase() + timePeriod.slice(1)} Analysis</p>
+          <div className="chart-header-title">
+            <FaChartLine className="chart-heading-icon" aria-hidden />
+            <div>
+              <h2>Price Analysis Dashboard</h2>
+              <p className="chart-subtitle">{timePeriod.charAt(0).toUpperCase() + timePeriod.slice(1)} Analysis</p>
+            </div>
           </div>
         </div>
         <LoadingSkeleton type="chart" count={3} />
@@ -59,14 +93,13 @@ const ChartPanel = ({ analytics, loading, timePeriod }: ChartPanelProps) => {
     return (
       <div className="chart-panel">
         <div className="no-data">
-          <div className="no-data-icon">📊</div>
+          <FaChartBar className="no-data-icon-svg" aria-hidden />
           <div>No data available for the selected period</div>
         </div>
       </div>
     );
   }
 
-  // Group data by period for better visualization
   const chartData = analytics.data.reduce((acc: any[], item) => {
     const existing = acc.find((d) => d.period === item.period);
     if (existing) {
@@ -80,7 +113,6 @@ const ChartPanel = ({ analytics, loading, timePeriod }: ChartPanelProps) => {
     return acc;
   }, []);
 
-  // Prepare data for line chart (average prices over time)
   const lineChartData = chartData.map((group) => {
     const avgMin = group.products.reduce((sum: number, p: any) => sum + p.avgMinPrice, 0) / group.products.length;
     const avgMax = group.products.reduce((sum: number, p: any) => sum + p.avgMaxPrice, 0) / group.products.length;
@@ -98,13 +130,11 @@ const ChartPanel = ({ analytics, loading, timePeriod }: ChartPanelProps) => {
     };
   });
 
-  // Calculate overall statistics
   const allPrices = analytics.data.flatMap((item: any) => [item.avgMinPrice, item.avgMaxPrice]);
   const overallAvg = allPrices.reduce((a: number, b: number) => a + b, 0) / allPrices.length;
   const overallMin = Math.min(...allPrices);
   const overallMax = Math.max(...allPrices);
 
-  // Prepare data for bar chart (top products by average price)
   const productAverages = analytics.data.reduce((acc: any, item) => {
     if (!acc[item.productId]) {
       acc[item.productId] = {
@@ -128,23 +158,25 @@ const ChartPanel = ({ analytics, loading, timePeriod }: ChartPanelProps) => {
     .sort((a: any, b: any) => b.avgPrice - a.avgPrice)
     .slice(0, 15);
 
+  const maxBarValue = Math.max(...barChartData.map((d: any) => d.avgPrice));
 
   const getBarColor = (value: number, maxValue: number) => {
     const ratio = value / maxValue;
-    if (ratio > 0.8) return '#ef4444';
-    if (ratio > 0.6) return '#f59e0b';
-    if (ratio > 0.4) return '#10b981';
-    return '#3b82f6';
+    if (ratio > 0.8) return colors.error;
+    if (ratio > 0.6) return colors.warning;
+    if (ratio > 0.4) return colors.success;
+    return colors.info;
   };
-
-  const maxBarValue = Math.max(...barChartData.map((d: any) => d.avgPrice));
 
   return (
     <div className="chart-panel">
       <div className="chart-header">
-        <div>
-          <h2>📈 Price Analysis Dashboard</h2>
-          <p className="chart-subtitle">{timePeriod.charAt(0).toUpperCase() + timePeriod.slice(1)} Analysis</p>
+        <div className="chart-header-title">
+          <FaChartLine className="chart-heading-icon" aria-hidden />
+          <div>
+            <h2>Price Analysis Dashboard</h2>
+            <p className="chart-subtitle">{timePeriod.charAt(0).toUpperCase() + timePeriod.slice(1)} Analysis</p>
+          </div>
         </div>
         <div className="chart-stats-badge">
           <span className="badge-item">
@@ -159,10 +191,12 @@ const ChartPanel = ({ analytics, loading, timePeriod }: ChartPanelProps) => {
       </div>
 
       <div className="charts-container">
-        {/* Price Trends Area Chart */}
         <div className="chart-wrapper enhanced">
           <div className="chart-title-section">
-            <h3>💰 Price Trends Over Time</h3>
+            <h3>
+              <FaDollarSign className="chart-section-icon" aria-hidden />
+              Price Trends Over Time
+            </h3>
             <div className="chart-info">
               <span className="info-item">Avg: Rs. {overallAvg.toFixed(2)}</span>
               <span className="info-item">Range: Rs. {overallMin.toFixed(2)} - Rs. {overallMax.toFixed(2)}</span>
@@ -172,37 +206,44 @@ const ChartPanel = ({ analytics, loading, timePeriod }: ChartPanelProps) => {
             <AreaChart data={lineChartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="colorMin" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#667eea" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#667eea" stopOpacity={0.1}/>
+                  <stop offset="5%" stopColor={colors.chart1} stopOpacity={0.8} />
+                  <stop offset="95%" stopColor={colors.chart1} stopOpacity={0.1} />
                 </linearGradient>
                 <linearGradient id="colorMax" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#10b981" stopOpacity={0.1}/>
+                  <stop offset="5%" stopColor={colors.chart3} stopOpacity={0.8} />
+                  <stop offset="95%" stopColor={colors.chart3} stopOpacity={0.1} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-              <XAxis 
-                dataKey="period" 
-                stroke="#6b7280"
+              <CartesianGrid strokeDasharray="3 3" stroke={colors.grid} />
+              <XAxis
+                dataKey="period"
+                stroke={colors.tick}
                 style={{ fontSize: '12px' }}
-                tick={{ fill: '#6b7280' }}
+                tick={{ fill: colors.tick }}
               />
-              <YAxis 
-                stroke="#6b7280"
+              <YAxis
+                stroke={colors.tick}
                 style={{ fontSize: '12px' }}
-                tick={{ fill: '#6b7280' }}
-                label={{ value: 'Price (Rs.)', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fill: '#6b7280' } }}
+                tick={{ fill: colors.tick }}
+                label={{
+                  value: 'Price (Rs.)',
+                  angle: -90,
+                  position: 'insideLeft',
+                  style: { textAnchor: 'middle', fill: colors.tick },
+                }}
               />
               <Tooltip content={<CustomTooltip />} />
-              <Legend 
-                wrapperStyle={{ paddingTop: '20px' }}
-                iconType="circle"
+              <Legend wrapperStyle={{ paddingTop: '20px' }} iconType="circle" />
+              <ReferenceLine
+                y={overallAvg}
+                stroke={colors.error}
+                strokeDasharray="5 5"
+                label={{ value: 'Average', position: 'right' }}
               />
-              <ReferenceLine y={overallAvg} stroke="#ef4444" strokeDasharray="5 5" label={{ value: 'Average', position: 'right' }} />
               <Area
                 type="monotone"
                 dataKey="avgMaxPrice"
-                stroke="#10b981"
+                stroke={colors.chart3}
                 strokeWidth={3}
                 fillOpacity={1}
                 fill="url(#colorMax)"
@@ -211,7 +252,7 @@ const ChartPanel = ({ analytics, loading, timePeriod }: ChartPanelProps) => {
               <Area
                 type="monotone"
                 dataKey="avgMinPrice"
-                stroke="#667eea"
+                stroke={colors.chart1}
                 strokeWidth={3}
                 fillOpacity={1}
                 fill="url(#colorMin)"
@@ -221,76 +262,106 @@ const ChartPanel = ({ analytics, loading, timePeriod }: ChartPanelProps) => {
           </ResponsiveContainer>
         </div>
 
-        {/* Composed Chart with Price Range */}
         <div className="chart-wrapper enhanced">
           <div className="chart-title-section">
-            <h3>📊 Price Range & Volatility</h3>
+            <h3>
+              <FaChartBar className="chart-section-icon" aria-hidden />
+              Price Range & Volatility
+            </h3>
             <div className="chart-info">
               <span className="info-item">Shows min/max range and volatility</span>
             </div>
           </div>
           <ResponsiveContainer width="100%" height={450}>
             <ComposedChart data={lineChartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-              <XAxis 
-                dataKey="period" 
-                stroke="#6b7280"
+              <CartesianGrid strokeDasharray="3 3" stroke={colors.grid} />
+              <XAxis
+                dataKey="period"
+                stroke={colors.tick}
                 style={{ fontSize: '12px' }}
-                tick={{ fill: '#6b7280' }}
+                tick={{ fill: colors.tick }}
               />
-              <YAxis 
+              <YAxis
                 yAxisId="left"
-                stroke="#6b7280"
+                stroke={colors.tick}
                 style={{ fontSize: '12px' }}
-                tick={{ fill: '#6b7280' }}
-                label={{ value: 'Price (Rs.)', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fill: '#6b7280' } }}
+                tick={{ fill: colors.tick }}
+                label={{
+                  value: 'Price (Rs.)',
+                  angle: -90,
+                  position: 'insideLeft',
+                  style: { textAnchor: 'middle', fill: colors.tick },
+                }}
               />
-              <YAxis 
-                yAxisId="right" 
+              <YAxis
+                yAxisId="right"
                 orientation="right"
-                stroke="#f59e0b"
+                stroke={colors.warning}
                 style={{ fontSize: '12px' }}
-                tick={{ fill: '#f59e0b' }}
-                label={{ value: 'Volatility', angle: 90, position: 'insideRight', style: { textAnchor: 'middle', fill: '#f59e0b' } }}
+                tick={{ fill: colors.warning }}
+                label={{
+                  value: 'Volatility',
+                  angle: 90,
+                  position: 'insideRight',
+                  style: { textAnchor: 'middle', fill: colors.warning },
+                }}
               />
               <Tooltip content={<CustomTooltip />} />
-              <Legend 
-                wrapperStyle={{ paddingTop: '20px' }}
-                iconType="circle"
+              <Legend wrapperStyle={{ paddingTop: '20px' }} iconType="circle" />
+              <Bar
+                yAxisId="left"
+                dataKey="priceRange"
+                fill={colors.warning}
+                name="Price Range (Rs.)"
+                opacity={0.6}
               />
-              <Bar yAxisId="left" dataKey="priceRange" fill="#f59e0b" name="Price Range (Rs.)" opacity={0.6} />
-              <Line yAxisId="right" type="monotone" dataKey="volatility" stroke="#ef4444" strokeWidth={3} name="Volatility" dot={{ r: 4 }} />
+              <Line
+                yAxisId="right"
+                type="monotone"
+                dataKey="volatility"
+                stroke={colors.error}
+                strokeWidth={3}
+                name="Volatility"
+                dot={{ r: 4 }}
+              />
             </ComposedChart>
           </ResponsiveContainer>
         </div>
 
-        {/* Top Products Bar Chart */}
         <div className="chart-wrapper enhanced">
           <div className="chart-title-section">
-            <h3>🏆 Top Products by Average Price</h3>
+            <h3>
+              <FaTrophy className="chart-section-icon" aria-hidden />
+              Top Products by Average Price
+            </h3>
             <div className="chart-info">
               <span className="info-item">Showing top {barChartData.length} products</span>
             </div>
           </div>
           <ResponsiveContainer width="100%" height={500}>
             <BarChart data={barChartData} margin={{ top: 10, right: 30, left: 0, bottom: 100 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-              <XAxis 
-                dataKey="product" 
-                angle={-45} 
-                textAnchor="end" 
+              <CartesianGrid strokeDasharray="3 3" stroke={colors.grid} />
+              <XAxis
+                dataKey="product"
+                angle={-45}
+                textAnchor="end"
                 height={120}
-                stroke="#6b7280"
+                stroke={colors.tick}
                 style={{ fontSize: '11px' }}
-                tick={{ fill: '#6b7280' }}
+                tick={{ fill: colors.tick }}
               />
-              <YAxis 
-                stroke="#6b7280"
+              <YAxis
+                stroke={colors.tick}
                 style={{ fontSize: '12px' }}
-                tick={{ fill: '#6b7280' }}
-                label={{ value: 'Average Price (Rs.)', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fill: '#6b7280' } }}
+                tick={{ fill: colors.tick }}
+                label={{
+                  value: 'Average Price (Rs.)',
+                  angle: -90,
+                  position: 'insideLeft',
+                  style: { textAnchor: 'middle', fill: colors.tick },
+                }}
               />
-              <Tooltip 
+              <Tooltip
                 content={({ active, payload }) => {
                   if (active && payload && payload.length) {
                     const data = payload[0].payload;
@@ -300,7 +371,7 @@ const ChartPanel = ({ analytics, loading, timePeriod }: ChartPanelProps) => {
                         <p className="tooltip-item" style={{ color: payload[0].color }}>
                           Average Price: Rs. {Number(payload[0].value).toFixed(2)}
                         </p>
-                        <p className="tooltip-item" style={{ color: '#f59e0b' }}>
+                        <p className="tooltip-item" style={{ color: colors.warning }}>
                           Volatility: {data.avgVolatility.toFixed(2)}
                         </p>
                       </div>
@@ -309,10 +380,7 @@ const ChartPanel = ({ analytics, loading, timePeriod }: ChartPanelProps) => {
                   return null;
                 }}
               />
-              <Legend 
-                wrapperStyle={{ paddingTop: '20px' }}
-                iconType="square"
-              />
+              <Legend wrapperStyle={{ paddingTop: '20px' }} iconType="square" />
               <Bar dataKey="avgPrice" name="Average Price (Rs.)" radius={[8, 8, 0, 0]}>
                 {barChartData.map((entry: any, index: number) => (
                   <Cell key={`cell-${index}`} fill={getBarColor(entry.avgPrice, maxBarValue)} />
@@ -325,18 +393,25 @@ const ChartPanel = ({ analytics, loading, timePeriod }: ChartPanelProps) => {
 
       <div className="analytics-summary enhanced">
         <div className="summary-header">
-          <h3>📋 Analysis Summary</h3>
+          <h3>
+            <FaClipboardList className="chart-section-icon" aria-hidden />
+            Analysis Summary
+          </h3>
         </div>
         <div className="summary-grid">
           <div className="summary-card">
-            <div className="summary-icon">📦</div>
+            <div className="summary-icon">
+              <FaBox aria-hidden />
+            </div>
             <div className="summary-content">
               <div className="summary-label">Total Products</div>
               <div className="summary-value">{analytics.summary.totalProducts}</div>
             </div>
           </div>
           <div className="summary-card">
-            <div className="summary-icon">📅</div>
+            <div className="summary-icon">
+              <FaCalendarAlt aria-hidden />
+            </div>
             <div className="summary-content">
               <div className="summary-label">Date Range</div>
               <div className="summary-value-small">
@@ -346,17 +421,23 @@ const ChartPanel = ({ analytics, loading, timePeriod }: ChartPanelProps) => {
             </div>
           </div>
           <div className="summary-card">
-            <div className="summary-icon">💰</div>
+            <div className="summary-icon">
+              <FaDollarSign aria-hidden />
+            </div>
             <div className="summary-content">
               <div className="summary-label">Average Price</div>
               <div className="summary-value">Rs. {overallAvg.toFixed(2)}</div>
             </div>
           </div>
           <div className="summary-card">
-            <div className="summary-icon">📊</div>
+            <div className="summary-icon">
+              <FaChartBar aria-hidden />
+            </div>
             <div className="summary-content">
               <div className="summary-label">Price Range</div>
-              <div className="summary-value-small">Rs. {overallMin.toFixed(2)} - Rs. {overallMax.toFixed(2)}</div>
+              <div className="summary-value-small">
+                Rs. {overallMin.toFixed(2)} - Rs. {overallMax.toFixed(2)}
+              </div>
             </div>
           </div>
         </div>
@@ -366,4 +447,3 @@ const ChartPanel = ({ analytics, loading, timePeriod }: ChartPanelProps) => {
 };
 
 export default ChartPanel;
-

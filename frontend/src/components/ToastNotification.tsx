@@ -1,4 +1,5 @@
 import toast, { Toaster } from 'react-hot-toast';
+import { FaInfoCircle } from 'react-icons/fa';
 import './ToastNotification.css';
 
 export const showSuccessToast = (message: string) => {
@@ -41,13 +42,13 @@ export const showInfoToast = (message: string) => {
   toast(message, {
     duration: 3000,
     position: 'top-right',
-    icon: 'ℹ️',
+    icon: <FaInfoCircle aria-hidden />,
     style: {
-      background: '#3b82f6',
+      background: '#15803d',
       color: 'white',
       borderRadius: '8px',
       padding: '1rem',
-      boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
+      boxShadow: '0 4px 12px rgba(21, 128, 61, 0.35)',
     },
   });
 };

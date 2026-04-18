@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { FaSearch, FaCalendarAlt, FaBox, FaCalendarDay } from 'react-icons/fa';
 import SmartTooltip from './SmartTooltip';
 import './FilterPanel.css';
 
@@ -118,7 +119,10 @@ const FilterPanel = ({
   return (
     <div className="filter-panel">
       <div className="filter-header">
-        <h3>🔍 Filters & Search</h3>
+        <h3 className="filter-panel-title">
+          <FaSearch className="filter-panel-title-icon" aria-hidden />
+          Filters & Search
+        </h3>
         {(selectedProductId || productSearch) && (
           <button className="clear-filters-button" onClick={handleClearFilters}>
             Clear Filters
@@ -130,7 +134,10 @@ const FilterPanel = ({
         <SmartTooltip content="Select time period for analysis">
           <div className="filter-group">
             <label htmlFor="timePeriod">
-              <span>📅 Time Period</span>
+              <span className="filter-label-with-icon">
+                <FaCalendarAlt aria-hidden />
+                Time Period
+              </span>
             </label>
             <select
               id="timePeriod"
@@ -138,11 +145,11 @@ const FilterPanel = ({
               onChange={(e) => onTimePeriodChange(e.target.value as any)}
               className="filter-select"
             >
-              <option value="weekly">📆 Weekly</option>
-              <option value="monthly">📅 Monthly</option>
-              <option value="quarterly">📊 Quarterly</option>
-              <option value="six-month">📈 6 Months</option>
-              <option value="annual">📆 Annual</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+              <option value="quarterly">Quarterly</option>
+              <option value="six-month">6 Months</option>
+              <option value="annual">Annual</option>
             </select>
           </div>
         </SmartTooltip>
@@ -150,7 +157,10 @@ const FilterPanel = ({
         <SmartTooltip content="Search and filter by product">
           <div className="filter-group filter-group-product">
             <label htmlFor="product">
-              <span>📦 Product</span>
+              <span className="filter-label-with-icon">
+                <FaBox aria-hidden />
+                Product
+              </span>
             </label>
             <div className="product-select-wrapper">
               <div className="product-search-container">
@@ -222,7 +232,10 @@ const FilterPanel = ({
         <SmartTooltip content="Start date for the analysis period">
           <div className="filter-group">
             <label htmlFor="startDate">
-              <span>📅 Start Date</span>
+              <span className="filter-label-with-icon">
+                <FaCalendarDay aria-hidden />
+                Start Date
+              </span>
             </label>
             <input
               id="startDate"
@@ -245,7 +258,10 @@ const FilterPanel = ({
         <SmartTooltip content="End date for the analysis period">
           <div className="filter-group">
             <label htmlFor="endDate">
-              <span>📅 End Date</span>
+              <span className="filter-label-with-icon">
+                <FaCalendarDay aria-hidden />
+                End Date
+              </span>
             </label>
             <input
               id="endDate"

@@ -1,18 +1,30 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap");
 
+/* Harvest Market — Sri Lanka produce analytics */
 :root {
-  /* Core Colors */
-  --primary: #6366f1;
-  --primary-light: #818cf8;
-  --primary-dark: #4f46e5;
-  --secondary: #ec4899;
-  --accent: #8b5cf6;
+  /* Core */
+  --primary: #15803d;
+  --primary-light: #22c55e;
+  --primary-dark: #14532d;
+  --secondary: #ea580c;
+  --accent: #c2410c;
+
+  /* Browser chrome / PWA (duplicate in index.html meta theme-color) */
+  --theme-color: #15803d;
+
+  /* Chart series (resolved hex for Recharts / canvas) */
+  --chart-1: #15803d;
+  --chart-2: #c2410c;
+  --chart-3: #0d9488;
+  --chart-4: #ca8a04;
+  --chart-5: #7c3aed;
+  --chart-6: #db2777;
 
   /* Backgrounds */
-  --bg-primary: #f8fafc;
+  --bg-primary: #f7faf5;
   --bg-secondary: #ffffff;
-  --bg-glass: rgba(255, 255, 255, 0.7);
-  --bg-glass-strong: rgba(255, 255, 255, 0.9);
+  --bg-glass: rgba(255, 255, 255, 0.72);
+  --bg-glass-strong: rgba(255, 255, 255, 0.92);
 
   /* Text */
   --text-primary: #1e293b;
@@ -20,7 +32,7 @@
   --text-tertiary: #94a3b8;
 
   /* Borders */
-  --border-light: rgba(226, 232, 240, 0.8);
+  --border-light: rgba(226, 232, 240, 0.85);
   --border-glass: rgba(255, 255, 255, 0.5);
 
   /* Shadows */
@@ -29,17 +41,17 @@
     0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
     0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  --shadow-glass: 0 8px 32px 0 rgba(21, 128, 61, 0.08);
 
   /* Glassmorphism */
   --glass-blur: blur(12px);
-  --glass-border: 1px solid rgba(255, 255, 255, 0.3);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.35);
 
   /* Status */
-  --success: #10b981;
-  --warning: #f59e0b;
-  --error: #ef4444;
-  --info: #3b82f6;
+  --success: #16a34a;
+  --warning: #d97706;
+  --error: #dc2626;
+  --info: #0d9488;
 
   /* Misc */
   --radius-sm: 8px;
@@ -51,20 +63,35 @@
 }
 
 [data-theme="dark"] {
+  --primary: #22c55e;
+  --primary-light: #4ade80;
+  --primary-dark: #16a34a;
+  --secondary: #fb923c;
+  --accent: #ea580c;
+
+  --theme-color: #14532d;
+
+  --chart-1: #4ade80;
+  --chart-2: #fb923c;
+  --chart-3: #2dd4bf;
+  --chart-4: #facc15;
+  --chart-5: #a78bfa;
+  --chart-6: #f472b6;
+
   --bg-primary: #0f172a;
   --bg-secondary: #1e293b;
-  --bg-glass: rgba(30, 41, 59, 0.7);
-  --bg-glass-strong: rgba(30, 41, 59, 0.9);
+  --bg-glass: rgba(30, 41, 59, 0.75);
+  --bg-glass-strong: rgba(30, 41, 59, 0.92);
 
   --text-primary: #f8fafc;
   --text-secondary: #cbd5e1;
   --text-tertiary: #64748b;
 
-  --border-light: rgba(51, 65, 85, 0.5);
-  --border-glass: rgba(255, 255, 255, 0.05);
+  --border-light: rgba(51, 65, 85, 0.55);
+  --border-glass: rgba(255, 255, 255, 0.06);
 
-  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-  --glass-border: 1px solid rgba(255, 255, 255, 0.05);
+  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.35);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 * {
@@ -78,11 +105,19 @@ body {
   background-color: var(--bg-primary);
   background-image: radial-gradient(
       at 0% 0%,
-      rgba(99, 102, 241, 0.15) 0px,
-      transparent 50%
+      rgba(21, 128, 61, 0.18) 0px,
+      transparent 52%
     ),
-    radial-gradient(at 100% 0%, rgba(236, 72, 153, 0.15) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.15) 0px, transparent 50%);
+    radial-gradient(
+      at 100% 0%,
+      rgba(194, 65, 12, 0.12) 0px,
+      transparent 48%
+    ),
+    radial-gradient(
+      at 100% 100%,
+      rgba(13, 148, 136, 0.1) 0px,
+      transparent 50%
+    );
   background-attachment: fixed;
   color: var(--text-primary);
   line-height: 1.5;
@@ -102,6 +137,16 @@ h6 {
 
 button {
   font-family: "Inter", sans-serif;
+}
+
+/* Focus — keyboard users */
+:where(button, a, input, select, textarea, [tabindex]:not([tabindex="-1"])):focus {
+  outline: none;
+}
+
+:where(button, a, input, select, textarea, [tabindex]:not([tabindex="-1"])):focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
 }
 
 /* Glassmorphism Utilities */
@@ -159,6 +204,25 @@ button {
 
 .animate-fade-in {
   animation: fadeIn 0.5s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float,
+  .animate-fade-in {
+    animation: none !important;
+  }
+
+  .glass-card {
+    transition: none;
+  }
+
+  .glass-card:hover {
+    transform: none;
+  }
+
+  body {
+    transition: none;
+  }
 }
 
 /* Scrollbar */

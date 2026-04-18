@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { FaRedo } from 'react-icons/fa';
 import './DataRefreshIndicator.css';
 
 interface DataRefreshIndicatorProps {
@@ -47,7 +48,9 @@ const DataRefreshIndicator = ({ lastUpdated, isRefreshing = false }: DataRefresh
         </div>
       ) : (
         <div className="refresh-status">
-          <span className="refresh-icon">🔄</span>
+          <span className="refresh-icon">
+            <FaRedo aria-hidden />
+          </span>
           <span>Last updated: {timeAgo}</span>
         </div>
       )}

@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
-import { FaLeaf, FaCartPlus, FaTrash, FaSave, FaFilePdf, FaFolderOpen } from 'react-icons/fa';
+import { FaLeaf, FaCartPlus, FaTrash, FaSave, FaFilePdf, FaFolderOpen, FaShoppingCart } from 'react-icons/fa';
 import { apiService, Product } from '../services/api';
 import { showSuccessToast, showErrorToast } from './ToastNotification';
 import EmptyState from './EmptyState';
@@ -178,9 +178,9 @@ const GroceryListPanel = () => {
     doc.rect(0, 0, pageWidth, 28, 'F');
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(20);
-    doc.setFont(undefined, 'bold');
+    doc.setFont('helvetica', 'bold');
     doc.text('Grocery List', marginX, 18);
-    doc.setFont(undefined, 'normal');
+    doc.setFont('helvetica', 'normal');
     doc.setFontSize(9.5);
     doc.text(`Generated: ${nowLabel}`, marginX, 24);
 
@@ -192,9 +192,9 @@ const GroceryListPanel = () => {
     doc.text(`Items: ${items.length}`, marginX + 4, 43);
     doc.text(`Organic: ${items.filter((i) => i.isOrganic).length}`, marginX + 38, 43);
     doc.text(`Non-organic: ${items.filter((i) => !i.isOrganic).length}`, marginX + 82, 43);
-    doc.setFont(undefined, 'bold');
+    doc.setFont('helvetica', 'bold');
     doc.text(`Total: Rs. ${totals.grand.toFixed(2)}`, pageWidth - marginX - 2, 43, { align: 'right' });
-    doc.setFont(undefined, 'normal');
+    doc.setFont('helvetica', 'normal');
     doc.setFontSize(11);
     const organicRows = items.filter((i) => i.isOrganic);
     const nonOrganicRows = items.filter((i) => !i.isOrganic);
@@ -249,7 +249,7 @@ const GroceryListPanel = () => {
     doc.setFillColor(240, 253, 244);
     doc.roundedRect(marginX, y, pageWidth - marginX * 2, 26, 3, 3, 'F');
     doc.setTextColor(22);
-    doc.setFont(undefined, 'bold');
+    doc.setFont('helvetica', 'bold');
     doc.setFontSize(11);
     let totalsY = y + 8;
     if (organicRows.length > 0) {
@@ -268,7 +268,7 @@ const GroceryListPanel = () => {
     y += 32;
 
     if (totals.hasAnalysed) {
-      doc.setFont(undefined, 'normal');
+      doc.setFont('helvetica', 'normal');
       doc.setFontSize(9);
       doc.setTextColor(80);
       doc.text(
@@ -477,7 +477,7 @@ const GroceryListPanel = () => {
       {/* List */}
       {items.length === 0 ? (
         <EmptyState
-          icon="🛒"
+          icon={<FaShoppingCart className="empty-state-icon-svg" aria-hidden />}
           title="Your list is empty"
           message="Search for vegetables or fruits above, choose quantity, and add them to build your grocery list. You can save and export to PDF when done."
         />

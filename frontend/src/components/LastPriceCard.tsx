@@ -1,4 +1,13 @@
 import { useQuery } from 'react-query';
+import {
+  FaChartBar,
+  FaArrowDown,
+  FaDollarSign,
+  FaArrowUp,
+  FaCalendarDay,
+  FaClock,
+  FaCalendarAlt,
+} from 'react-icons/fa';
 import { apiService } from '../services/api';
 import './LastPriceCard.css';
 
@@ -11,9 +20,9 @@ const LastPriceCard = ({ productId, productName }: LastPriceCardProps) => {
   const { data, isLoading } = useQuery(
     ['last-price', productId],
     () => apiService.getLastPriceForProduct(productId!),
-    { 
+    {
       enabled: !!productId,
-      refetchInterval: 300000, // Refetch every 5 minutes
+      refetchInterval: 300000,
     }
   );
 
@@ -36,7 +45,9 @@ const LastPriceCard = ({ productId, productName }: LastPriceCardProps) => {
     return (
       <div className="last-price-card">
         <div className="no-price-data">
-          <span className="no-data-icon">📊</span>
+          <span className="no-data-icon-wrap">
+            <FaChartBar aria-hidden />
+          </span>
           <div>
             <div className="no-data-title">No Price Data Available</div>
             <div className="no-data-text">No price records found for this product</div>
@@ -53,24 +64,33 @@ const LastPriceCard = ({ productId, productName }: LastPriceCardProps) => {
   const priceDate = new Date(price.date);
   const dateLabel = data.dateLabel || 'Unknown';
 
-  // Determine badge color based on date
   const getDateBadgeClass = () => {
     if (dateLabel === 'Today') return 'badge-today';
     if (dateLabel === 'Yesterday') return 'badge-yesterday';
     return 'badge-older';
   };
 
+  const dateBadgeIcon =
+    dateLabel === 'Today' ? (
+      <FaCalendarDay aria-hidden />
+    ) : dateLabel === 'Yesterday' ? (
+      <FaClock aria-hidden />
+    ) : (
+      <FaCalendarAlt aria-hidden />
+    );
+
   return (
     <div className="last-price-card">
       <div className="last-price-header">
         <div className="header-content">
-          <h3>📊 Last Price Information</h3>
+          <h3 className="last-price-heading">
+            <FaChartBar className="last-price-heading-icon" aria-hidden />
+            Last Price Information
+          </h3>
           {productName && <p className="product-name">{productName}</p>}
         </div>
         <div className={`date-badge ${getDateBadgeClass()}`}>
-          <span className="badge-icon">
-            {dateLabel === 'Today' ? '📅' : dateLabel === 'Yesterday' ? '🕐' : '📆'}
-          </span>
+          <span className="badge-icon">{dateBadgeIcon}</span>
           <span className="badge-text">{dateLabel}</span>
         </div>
       </div>
@@ -78,7 +98,9 @@ const LastPriceCard = ({ productId, productName }: LastPriceCardProps) => {
       <div className="last-price-body">
         <div className="price-display-grid">
           <div className="price-item min-price">
-            <div className="price-icon">⬇️</div>
+            <div className="price-icon">
+              <FaArrowDown aria-hidden />
+            </div>
             <div className="price-content">
               <div className="price-label">Minimum Price</div>
               <div className="price-value">Rs. {minPrice.toFixed(2)}</div>
@@ -86,7 +108,9 @@ const LastPriceCard = ({ productId, productName }: LastPriceCardProps) => {
           </div>
 
           <div className="price-item avg-price highlight">
-            <div className="price-icon">💰</div>
+            <div className="price-icon">
+              <FaDollarSign aria-hidden />
+            </div>
             <div className="price-content">
               <div className="price-label">Average Price</div>
               <div className="price-value">Rs. {avgPrice.toFixed(2)}</div>
@@ -94,7 +118,9 @@ const LastPriceCard = ({ productId, productName }: LastPriceCardProps) => {
           </div>
 
           <div className="price-item max-price">
-            <div className="price-icon">⬆️</div>
+            <div className="price-icon">
+              <FaArrowUp aria-hidden />
+            </div>
             <div className="price-content">
               <div className="price-label">Maximum Price</div>
               <div className="price-value">Rs. {maxPrice.toFixed(2)}</div>
@@ -105,16 +131,20 @@ const LastPriceCard = ({ productId, productName }: LastPriceCardProps) => {
         <div className="price-details">
           <div className="detail-item">
             <span className="detail-label">Price Date:</span>
-            <span className="detail-value">{priceDate.toLocaleDateString('en-US', { 
-              weekday: 'long', 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
-            })}</span>
+            <span className="detail-value">
+              {priceDate.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
+            </span>
           </div>
           <div className="detail-item">
             <span className="detail-label">Price Range:</span>
-            <span className="detail-value">Rs. {minPrice.toFixed(2)} - Rs. {maxPrice.toFixed(2)}</span>
+            <span className="detail-value">
+              Rs. {minPrice.toFixed(2)} - Rs. {maxPrice.toFixed(2)}
+            </span>
           </div>
           <div className="detail-item">
             <span className="detail-label">Product Type:</span>
@@ -124,11 +154,11 @@ const LastPriceCard = ({ productId, productName }: LastPriceCardProps) => {
 
         <div className="price-range-visual">
           <div className="range-bar">
-            <div 
-              className="range-fill" 
-              style={{ 
+            <div
+              className="range-fill"
+              style={{
                 width: `${((avgPrice - minPrice) / (maxPrice - minPrice)) * 100}%`,
-                left: '0%'
+                left: '0%',
               }}
             />
             <div className="range-markers">
@@ -144,4 +174,3 @@ const LastPriceCard = ({ productId, productName }: LastPriceCardProps) => {
 };
 
 export default LastPriceCard;
-

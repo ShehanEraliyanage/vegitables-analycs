@@ -1,7 +1,9 @@
+import { ReactNode } from 'react';
+import { FaChartPie } from 'react-icons/fa';
 import './EmptyState.css';
 
 interface EmptyStateProps {
-  icon?: string;
+  icon?: ReactNode;
   title: string;
   message: string;
   action?: {
@@ -10,14 +12,19 @@ interface EmptyStateProps {
   };
 }
 
-const EmptyState = ({ icon = '📊', title, message, action }: EmptyStateProps) => {
+const EmptyState = ({
+  icon = <FaChartPie className="empty-state-icon-svg" aria-hidden />,
+  title,
+  message,
+  action,
+}: EmptyStateProps) => {
   return (
     <div className="empty-state">
       <div className="empty-state-icon">{icon}</div>
       <h3 className="empty-state-title">{title}</h3>
       <p className="empty-state-message">{message}</p>
       {action && (
-        <button className="empty-state-action" onClick={action.onClick}>
+        <button type="button" className="empty-state-action" onClick={action.onClick}>
           {action.label}
         </button>
       )}
@@ -26,9 +33,3 @@ const EmptyState = ({ icon = '📊', title, message, action }: EmptyStateProps) 
 };
 
 export default EmptyState;
-
-
-
-
-
-

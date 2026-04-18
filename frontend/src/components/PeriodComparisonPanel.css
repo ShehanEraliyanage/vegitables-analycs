@@ -202,7 +202,7 @@
 
 .export-excel-button {
   padding: 12px 24px;
-  background: #10b981;
+  background: var(--primary);
   color: white;
   border: none;
   border-radius: 6px;
@@ -215,8 +215,14 @@
   gap: 8px;
 }
 
+.export-excel-icon {
+  width: 1.1rem;
+  height: 1.1rem;
+  flex-shrink: 0;
+}
+
 .export-excel-button:hover {
-  background: #059669;
+  background: var(--primary-dark);
 }
 
 .comparison-table-container {

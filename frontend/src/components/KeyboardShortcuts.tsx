@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { FaKeyboard, FaTimes } from 'react-icons/fa';
 import './KeyboardShortcuts.css';
 
 interface KeyboardShortcutsProps {
@@ -72,9 +73,12 @@ const KeyboardShortcuts = ({ onShortcut, isOpen, onToggle }: KeyboardShortcutsPr
     <div className="keyboard-shortcuts-overlay" onClick={() => setHelpVisible(false)}>
       <div className="keyboard-shortcuts-modal" onClick={(e) => e.stopPropagation()}>
         <div className="shortcuts-header">
-          <h2>⌨️ Keyboard Shortcuts</h2>
-          <button className="close-button" onClick={() => setHelpVisible(false)}>
-            ✕
+          <h2 className="shortcuts-title">
+            <FaKeyboard aria-hidden />
+            Keyboard Shortcuts
+          </h2>
+          <button type="button" className="close-button" onClick={() => setHelpVisible(false)} aria-label="Close">
+            <FaTimes aria-hidden />
           </button>
         </div>
         <div className="shortcuts-list">

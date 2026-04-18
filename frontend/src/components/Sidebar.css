@@ -20,12 +20,21 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.75rem;
   padding: 1.5rem;
   border-bottom: var(--border-glass);
 }
 
-.sidebar-header h3 {
-  font-size: 1.25rem;
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.sidebar-title {
+  font-size: 1.15rem;
   font-weight: 700;
   color: var(--text-primary);
   margin: 0;
@@ -33,6 +42,9 @@
   background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .sidebar-toggle {
@@ -133,7 +145,7 @@
   width: 80px;
 }
 
-.sidebar.collapsed .sidebar-header h3,
+.sidebar.collapsed .sidebar-title,
 .sidebar.collapsed .sidebar-label,
 .sidebar.collapsed .sidebar-shortcut {
   display: none;

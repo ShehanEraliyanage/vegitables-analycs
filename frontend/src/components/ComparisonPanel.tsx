@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { apiService, Product } from '../services/api';
+import { useTheme } from '../contexts/ThemeContext';
+import { cssVar } from '../utils/cssVariables';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import './ComparisonPanel.css';
 
@@ -12,6 +14,16 @@ interface ComparisonPanelProps {
 
 const ComparisonPanel = ({ products, startDate, endDate }: ComparisonPanelProps) => {
   const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
+  const { theme } = useTheme();
+
+  const chartFills = useMemo(
+    () => ({
+      avg: cssVar('--chart-1', '#15803d'),
+      min: cssVar('--chart-3', '#0d9488'),
+      max: cssVar('--chart-2', '#c2410c'),
+    }),
+    [theme],
+  );
 
   const { data, isLoading, refetch } = useQuery(
     ['compare', selectedProducts.join(','), startDate, endDate],
@@ -129,9 +141,9 @@ const ComparisonPanel = ({ products, startDate, endDate }: ComparisonPanelProps)
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="avgPrice" fill="#8884d8" name="Average Price (Rs.)" />
-                <Bar dataKey="minPrice" fill="#82ca9d" name="Min Price (Rs.)" />
-                <Bar dataKey="maxPrice" fill="#ffc658" name="Max Price (Rs.)" />
+                <Bar dataKey="avgPrice" fill={chartFills.avg} name="Average Price (Rs.)" />
+                <Bar dataKey="minPrice" fill={chartFills.min} name="Min Price (Rs.)" />
+                <Bar dataKey="maxPrice" fill={chartFills.max} name="Max Price (Rs.)" />
               </BarChart>
             </ResponsiveContainer>
           </div>

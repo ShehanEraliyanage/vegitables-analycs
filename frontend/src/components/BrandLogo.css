@@ -1,0 +1,6 @@
+.brand-logo {
+  display: block;
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}

@@ -1,6 +1,14 @@
 import { useState, useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { apiService } from '../services/api';
+import {
+  FaDollarSign,
+  FaArrowDown,
+  FaArrowUp,
+  FaDownload,
+  FaCalendarDay,
+  FaClock,
+} from 'react-icons/fa';
 import LoadingSkeleton from './LoadingSkeleton';
 import EmptyState from './EmptyState';
 import DataRefreshIndicator from './DataRefreshIndicator';
@@ -109,9 +117,12 @@ const CurrentPricesPanel = ({ selectedProductId, startDate, endDate }: CurrentPr
     return (
       <div className="current-prices-panel">
         <div className="current-prices-header">
-          <div>
-            <h2>💰 Current Market Prices</h2>
+          <div className="current-prices-title-row">
+            <FaDollarSign className="panel-heading-icon" aria-hidden />
+            <div>
+            <h2>Current Market Prices</h2>
             <p className="current-prices-subtitle">Latest available prices</p>
+            </div>
           </div>
         </div>
         <LoadingSkeleton type="card" count={4} />
@@ -123,7 +134,7 @@ const CurrentPricesPanel = ({ selectedProductId, startDate, endDate }: CurrentPr
     return (
       <div className="current-prices-panel">
         <EmptyState
-          icon="💰"
+          icon={<FaDollarSign className="empty-state-icon-svg" aria-hidden />}
           title="No Current Price Data"
           message="No price data is currently available. Prices will appear after the daily sync completes."
         />
@@ -217,8 +228,10 @@ const CurrentPricesPanel = ({ selectedProductId, startDate, endDate }: CurrentPr
   return (
     <div className="current-prices-panel">
       <div className="current-prices-header">
-        <div>
-          <h2>💰 Current Market Prices</h2>
+        <div className="current-prices-title-row">
+          <FaDollarSign className="panel-heading-icon" aria-hidden />
+          <div>
+          <h2>Current Market Prices</h2>
           <p className="current-prices-subtitle">
             {isToday ? "Today's prices" : 'Latest available prices'} - {new Date(displayDate).toLocaleDateString('en-US', { 
               weekday: 'long', 
@@ -227,9 +240,10 @@ const CurrentPricesPanel = ({ selectedProductId, startDate, endDate }: CurrentPr
               day: 'numeric' 
             })}
           </p>
+          </div>
         </div>
         <div className="price-badge">
-          <span className="badge-icon">{isToday ? '📅' : '🕐'}</span>
+          <span className="badge-icon">{isToday ? <FaCalendarDay aria-hidden /> : <FaClock aria-hidden />}</span>
           <span className="badge-text">{isToday ? 'Today' : 'Latest'}</span>
         </div>
       </div>
@@ -283,7 +297,7 @@ const CurrentPricesPanel = ({ selectedProductId, startDate, endDate }: CurrentPr
           disabled={!filteredAndSortedData || filteredAndSortedData.length === 0}
           title="Export current prices to Excel"
         >
-          <span className="export-icon">📥</span>
+          <span className="export-icon"><FaDownload aria-hidden /></span>
           <span>Export Excel</span>
         </button>
       </div>
@@ -330,7 +344,7 @@ const CurrentPricesPanel = ({ selectedProductId, startDate, endDate }: CurrentPr
                 <div className="price-display">
                   <div className="price-item price-min">
                     <div className="price-label">
-                      <span className="price-icon">⬇️</span>
+                      <span className="price-icon"><FaArrowDown aria-hidden /></span>
                       <span>Min</span>
                     </div>
                     <div className="price-value">Rs. {minPrice.toFixed(2)}</div>
@@ -338,7 +352,7 @@ const CurrentPricesPanel = ({ selectedProductId, startDate, endDate }: CurrentPr
 
                   <div className="price-item price-avg">
                     <div className="price-label">
-                      <span className="price-icon">💰</span>
+                      <span className="price-icon"><FaDollarSign aria-hidden /></span>
                       <span>Average</span>
                     </div>
                     <div className="price-value">Rs. {avgPrice.toFixed(2)}</div>
@@ -346,7 +360,7 @@ const CurrentPricesPanel = ({ selectedProductId, startDate, endDate }: CurrentPr
 
                   <div className="price-item price-max">
                     <div className="price-label">
-                      <span className="price-icon">⬆️</span>
+                      <span className="price-icon"><FaArrowUp aria-hidden /></span>
                       <span>Max</span>
                     </div>
                     <div className="price-value">Rs. {maxPrice.toFixed(2)}</div>

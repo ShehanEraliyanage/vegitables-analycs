@@ -4,8 +4,8 @@
   "description": "Comprehensive analytics platform for tracking and analyzing vegetable and fruit prices in Sri Lanka",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#1a1a1a",
-  "theme_color": "#667eea",
+  "background_color": "#0f172a",
+  "theme_color": "#15803d",
   "orientation": "portrait-primary",
   "icons": [
     {

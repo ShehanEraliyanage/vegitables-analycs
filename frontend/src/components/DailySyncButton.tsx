@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import Swal from 'sweetalert2';
+import { FaCheck, FaRedo, FaExclamationTriangle } from 'react-icons/fa';
 import { apiService } from '../services/api';
 import './DailySyncButton.css';
 
@@ -60,7 +61,7 @@ const DailySyncButton = () => {
                 </p>
               </div>
             `,
-            confirmButtonColor: '#667eea',
+            confirmButtonColor: '#15803d',
             confirmButtonText: 'OK',
             timer: 4000,
           });
@@ -79,7 +80,7 @@ const DailySyncButton = () => {
                 </p>` : ''}
               </div>
             `,
-            confirmButtonColor: '#667eea',
+            confirmButtonColor: '#15803d',
             confirmButtonText: 'Great!',
             timer: 3000,
           });
@@ -95,7 +96,7 @@ const DailySyncButton = () => {
                 </p>
               </div>
             `,
-            confirmButtonColor: '#667eea',
+            confirmButtonColor: '#15803d',
             confirmButtonText: 'Great!',
             timer: 3000,
           });
@@ -183,7 +184,7 @@ const DailySyncButton = () => {
       html: message,
       icon: 'question',
       showCancelButton: true,
-      confirmButtonColor: '#667eea',
+      confirmButtonColor: '#15803d',
       cancelButtonColor: '#6b7280',
       confirmButtonText: 'Yes, Sync Now',
       cancelButtonText: 'Cancel',
@@ -234,8 +235,8 @@ const DailySyncButton = () => {
   return (
     <div className="daily-sync-container">
       <div className="daily-sync-info">
-        <div className="daily-sync-icon">
-          {isDataFetched && !hasMissingDates ? '✅' : '🔄'}
+        <div className="daily-sync-icon" aria-hidden>
+          {isDataFetched && !hasMissingDates ? <FaCheck /> : <FaRedo />}
         </div>
         <div className="daily-sync-content">
           <h4>Daily Data Sync</h4>
@@ -247,31 +248,35 @@ const DailySyncButton = () => {
           )}
           <p className="daily-sync-status">
             {isLoadingMissingDates ? (
-              <span className="status-pending">
-                🔄 Checking for missing dates...
+              <span className="status-pending status-with-icon">
+                <FaRedo className="icon-spin" aria-hidden />
+                Checking for missing dates...
               </span>
             ) : missingDatesError ? (
-              <span className="status-pending" style={{ color: '#ef4444' }}>
-                ⚠ Error checking missing dates
+              <span className="status-pending status-with-icon" style={{ color: '#ef4444' }}>
+                <FaExclamationTriangle aria-hidden />
+                Error checking missing dates
               </span>
             ) : isDataFetched && !hasMissingDates ? (
               <span className="status-success">
                 ✓ All data up to date
               </span>
             ) : hasMissingDates ? (
-              <span className="status-pending">
-                ⚠ {missingDates.length} missing date(s) found
+              <span className="status-pending status-with-icon">
+                <FaExclamationTriangle aria-hidden />
+                {missingDates.length} missing date(s) found
               </span>
             ) : (
-              <span className="status-pending">
-                ⚠ No data found for today
+              <span className="status-pending status-with-icon">
+                <FaExclamationTriangle aria-hidden />
+                No data found for today
               </span>
             )}
           </p>
           {hasMissingDates && (
             <div style={{ marginTop: '0.5rem', fontSize: '0.8rem', color: '#6b7280' }}>
               <details style={{ cursor: 'pointer' }}>
-                <summary style={{ color: '#667eea', fontWeight: 500 }}>
+                <summary style={{ color: '#15803d', fontWeight: 500 }}>
                   View missing dates ({missingDates.length})
                 </summary>
                 <div style={{ marginTop: '0.5rem', padding: '0.5rem', background: '#f3f4f6', borderRadius: '4px', maxHeight: '150px', overflowY: 'auto' }}>
@@ -310,12 +315,16 @@ const DailySyncButton = () => {
           </>
         ) : hasMissingDates ? (
           <>
-            <span>🔄</span>
+            <span className="daily-sync-btn-icon" aria-hidden>
+              <FaRedo />
+            </span>
             Sync {missingDates.length} Date{missingDates.length > 1 ? 's' : ''}
           </>
         ) : (
           <>
-            <span>🔄</span>
+            <span className="daily-sync-btn-icon" aria-hidden>
+              <FaRedo />
+            </span>
             Sync Today's Data
           </>
         )}

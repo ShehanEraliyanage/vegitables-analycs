@@ -10,7 +10,7 @@
 
 .last-price-card:hover {
   box-shadow: var(--shadow-md);
-  border-color: var(--primary-color);
+  border-color: var(--primary);
 }
 
 .last-price-header {
@@ -24,11 +24,21 @@
   gap: 1rem;
 }
 
-.header-content h3 {
+.last-price-heading {
   margin: 0 0 0.5rem 0;
   color: var(--text-primary);
   font-size: 1.3rem;
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.last-price-heading-icon {
+  width: 1.35rem;
+  height: 1.35rem;
+  flex-shrink: 0;
+  color: var(--primary);
 }
 
 .product-name {
@@ -65,7 +75,14 @@
 }
 
 .badge-icon {
-  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.badge-icon svg {
+  width: 1rem;
+  height: 1rem;
 }
 
 .badge-text {
@@ -118,9 +135,15 @@
 }
 
 .price-icon {
-  font-size: 2rem;
-  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+}
+
+.price-icon svg {
+  width: 1.75rem;
+  height: 1.75rem;
 }
 
 .price-content {
@@ -249,9 +272,17 @@
   color: var(--text-secondary);
 }
 
-.no-data-icon {
-  font-size: 3rem;
-  opacity: 0.5;
+.no-data-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  opacity: 0.55;
+}
+
+.no-data-icon-wrap svg {
+  width: 3rem;
+  height: 3rem;
 }
 
 .no-data-title {

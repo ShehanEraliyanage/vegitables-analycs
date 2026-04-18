@@ -1,5 +1,8 @@
+import { useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { apiService } from '../services/api';
+import { useTheme } from '../contexts/ThemeContext';
+import { cssVar } from '../utils/cssVariables';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import './DistributionPanel.css';
 
@@ -10,6 +13,9 @@ interface DistributionPanelProps {
 }
 
 const DistributionPanel = ({ startDate, endDate, productId }: DistributionPanelProps) => {
+  const { theme } = useTheme();
+  const barFill = useMemo(() => cssVar('--chart-1', '#15803d'), [theme]);
+
   const { data, isLoading } = useQuery(
     ['distribution', startDate, endDate, productId],
     () => apiService.getPriceDistribution({ startDate, endDate, productId }),
@@ -71,7 +77,7 @@ const DistributionPanel = ({ startDate, endDate, productId }: DistributionPanelP
             <YAxis />
             <Tooltip />
             <Legend />
-            <Bar dataKey="count" fill="#8884d8" name="Number of Prices" />
+            <Bar dataKey="count" fill={barFill} name="Number of Prices" />
           </BarChart>
         </ResponsiveContainer>
       </div>

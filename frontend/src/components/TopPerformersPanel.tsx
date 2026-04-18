@@ -1,5 +1,8 @@
+import { useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { apiService } from '../services/api';
+import { useTheme } from '../contexts/ThemeContext';
+import { cssVar } from '../utils/cssVariables';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import './TopPerformersPanel.css';
 
@@ -10,6 +13,15 @@ interface TopPerformersPanelProps {
 }
 
 const TopPerformersPanel = ({ startDate, endDate, limit = 10 }: TopPerformersPanelProps) => {
+  const { theme } = useTheme();
+  const chartColors = useMemo(
+    () => ({
+      success: cssVar('--success', '#16a34a'),
+      error: cssVar('--error', '#dc2626'),
+    }),
+    [theme],
+  );
+
   const { data, isLoading } = useQuery(
     ['top-performers', startDate, endDate, limit],
     () => apiService.getTopPerformers({ startDate, endDate, limit }),
@@ -90,7 +102,7 @@ const TopPerformersPanel = ({ startDate, endDate, limit = 10 }: TopPerformersPan
                     <YAxis />
                     <Tooltip />
                     <Legend />
-                    <Bar dataKey="change" fill="#10b981" name="Price Decrease %" />
+                    <Bar dataKey="change" fill={chartColors.success} name="Price Decrease %" />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -137,7 +149,7 @@ const TopPerformersPanel = ({ startDate, endDate, limit = 10 }: TopPerformersPan
                     <YAxis />
                     <Tooltip />
                     <Legend />
-                    <Bar dataKey="change" fill="#ef4444" name="Price Increase %" />
+                    <Bar dataKey="change" fill={chartColors.error} name="Price Increase %" />
                   </BarChart>
                 </ResponsiveContainer>
               </div>

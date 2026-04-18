@@ -12,6 +12,7 @@ import {
   FaTimes,
   FaBars
 } from 'react-icons/fa';
+import BrandLogo from './BrandLogo';
 import './Sidebar.css';
 
 type AnalyticsTab = 'current' | 'grocery' | 'overview' | 'trends' | 'performers' | 'comparison' | 'seasonal' | 'distribution' | 'period-comparison' | 'favorites';
@@ -81,7 +82,10 @@ const Sidebar = ({ activeTab, onTabChange, isOpen, onToggle, onCollapseChange }:
       <div className={`sidebar-overlay ${!isCollapsed ? 'active' : ''}`} onClick={handleClose} />
       <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
         <div className="sidebar-header">
-          {!isCollapsed && <h3>Navigation</h3>}
+          <div className="sidebar-brand">
+            <BrandLogo size={isCollapsed ? 32 : 36} />
+            {!isCollapsed && <h3 className="sidebar-title">Veg Analytics</h3>}
+          </div>
           <button 
             className="sidebar-toggle"
             onClick={handleToggle}

@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useState, ReactNode } from 'react';
+import { FaBolt, FaTimes } from 'react-icons/fa';
 import SmartTooltip from './SmartTooltip';
 import './QuickActions.css';
 
 interface QuickAction {
   id: string;
   label: string;
-  icon: string;
+  icon: ReactNode;
   onClick: () => void;
   shortcut?: string;
 }
@@ -26,7 +27,7 @@ const QuickActions = ({ actions }: QuickActionsProps) => {
         onClick={() => setIsExpanded(!isExpanded)}
         aria-label="Quick actions"
       >
-        <span className="toggle-icon">{isExpanded ? '✕' : '⚡'}</span>
+        <span className="toggle-icon">{isExpanded ? <FaTimes aria-hidden /> : <FaBolt aria-hidden />}</span>
       </button>
       {isExpanded && (
         <div className="quick-actions-menu">

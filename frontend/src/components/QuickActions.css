@@ -9,12 +9,12 @@
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
   border: none;
   color: white;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--primary) 35%, transparent);
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
@@ -23,7 +23,7 @@
 
 .quick-actions-toggle:hover {
   transform: scale(1.1);
-  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--primary) 45%, transparent);
 }
 
 .quick-actions-menu {
@@ -62,8 +62,16 @@
 }
 
 .action-icon {
-  font-size: 1.25rem;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+}
+
+.action-icon svg {
+  width: 1.25rem;
+  height: 1.25rem;
 }
 
 .action-label {
