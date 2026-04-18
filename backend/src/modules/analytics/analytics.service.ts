@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PriceService } from '../price/price.service';
 
 export interface AnalyticsDataPoint {
@@ -950,6 +950,135 @@ export class AnalyticsService {
         productsDecreased,
         productsStable,
       },
+    };
+  }
+
+  /**
+   * Excel-style matrix: one row per product, one column per calendar month in range.
+   * Cell = average of daily mid-prices ((min+max)/2) for that product in that month (within [start, end]).
+   */
+  async getMonthlyAverageMatrix(
+    startDateStr: string,
+    endDateStr: string,
+    productId?: number,
+    productType?: string,
+  ): Promise<{
+    startDate: string;
+    endDate: string;
+    months: { key: string; label: string }[];
+    products: {
+      productId: number;
+      productName: string;
+      productType: string;
+      monthlyAverages: { monthKey: string; avgPrice: number | null }[];
+    }[];
+  }> {
+    const start = new Date(startDateStr);
+    const end = new Date(endDateStr);
+    if (Number.isNaN(+start) || Number.isNaN(+end)) {
+      throw new BadRequestException('Invalid startDate or endDate');
+    }
+    start.setHours(0, 0, 0, 0);
+    end.setHours(23, 59, 59, 999);
+    if (start > end) {
+      throw new BadRequestException('startDate must be on or before endDate');
+    }
+
+    const spanMonths =
+      (end.getFullYear() - start.getFullYear()) * 12 +
+      (end.getMonth() - start.getMonth());
+    if (spanMonths > 36) {
+      throw new BadRequestException('Date range cannot exceed 36 months');
+    }
+
+    const months: { key: string; label: string }[] = [];
+    const cursor = new Date(start.getFullYear(), start.getMonth(), 1);
+    const endMonth = new Date(end.getFullYear(), end.getMonth(), 1);
+    while (cursor <= endMonth) {
+      const y = cursor.getFullYear();
+      const m = cursor.getMonth() + 1;
+      const key = `${y}-${String(m).padStart(2, '0')}`;
+      const label = cursor.toLocaleString('en-US', {
+        month: 'short',
+        year: 'numeric',
+      });
+      months.push({ key, label });
+      cursor.setMonth(cursor.getMonth() + 1);
+    }
+
+    const prices = await this.priceService.getPricesByDateRange(
+      start,
+      end,
+      productId,
+    );
+
+    let rows = prices;
+    if (productType) {
+      rows = prices.filter((p) => p.product?.type === productType);
+    }
+
+    type Bucket = Map<string, number[]>;
+    const byProduct = new Map<number, Bucket>();
+    const meta = new Map<
+      number,
+      { name: string; type: string }
+    >();
+
+    const monthKeySet = new Set(months.map((m) => m.key));
+
+    for (const p of rows) {
+      const pd = new Date(p.date);
+      if (pd < start || pd > end) continue;
+
+      const mid = (Number(p.minPrice) + Number(p.maxPrice)) / 2;
+      const y = pd.getFullYear();
+      const mo = pd.getMonth() + 1;
+      const monthKey = `${y}-${String(mo).padStart(2, '0')}`;
+      if (!monthKeySet.has(monthKey)) continue;
+
+      if (!byProduct.has(p.productId)) {
+        byProduct.set(p.productId, new Map());
+      }
+      const bucket = byProduct.get(p.productId)!;
+      if (!bucket.has(monthKey)) {
+        bucket.set(monthKey, []);
+      }
+      bucket.get(monthKey)!.push(mid);
+      meta.set(p.productId, {
+        name: p.product?.name ?? `Product ${p.productId}`,
+        type: p.product?.type ?? '',
+      });
+    }
+
+    const products = Array.from(byProduct.keys())
+      .map((pid) => {
+        const bucket = byProduct.get(pid)!;
+        const m = meta.get(pid)!;
+        const monthlyAverages = months.map(({ key }) => {
+          const arr = bucket.get(key);
+          if (!arr || arr.length === 0) {
+            return { monthKey: key, avgPrice: null as number | null };
+          }
+          const avg =
+            Math.round(
+              (arr.reduce((a, b) => a + b, 0) / arr.length) * 100,
+            ) / 100;
+          return { monthKey: key, avgPrice: avg };
+        });
+        return {
+          productId: pid,
+          productName: m.name,
+          productType: m.type,
+          monthlyAverages,
+        };
+      })
+      .sort((a, b) => a.productName.localeCompare(b.productName));
+
+    return {
+      startDate: start.toISOString().split('T')[0],
+      endDate: end.toISOString().split('T')[0],
+      months,
+      products,
     };
   }
 }

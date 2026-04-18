@@ -133,6 +133,22 @@ export class AnalyticsController {
     return this.analyticsService.getPriceDistribution(start, end, product);
   }
 
+  @Get('monthly-average-matrix')
+  async getMonthlyAverageMatrix(
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+    @Query('productId') productId?: string,
+    @Query('productType') productType?: string,
+  ) {
+    const product = productId ? +productId : undefined;
+    return this.analyticsService.getMonthlyAverageMatrix(
+      startDate,
+      endDate,
+      product,
+      productType,
+    );
+  }
+
   @Get('period-comparison')
   async getPeriodComparison(
     @Query('period') period: string,

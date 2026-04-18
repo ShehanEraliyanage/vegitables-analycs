@@ -246,6 +246,18 @@ export const apiService = {
     return response.data;
   },
 
+  getMonthlyAverageMatrix: async (params: {
+    startDate: string;
+    endDate: string;
+    productId?: number;
+    productType?: string;
+  }) => {
+    const response = await api.get('/analytics/monthly-average-matrix', {
+      params,
+    });
+    return response.data;
+  },
+
   // Product search (for Grocery List)
   searchProducts: async (q: string, limit?: number): Promise<Product[]> => {
     const response = await api.get('/products/search', {
